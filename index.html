@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID LAGBO | Multi-Control Marketplace</title>
+    <title>ID LAGBO | Trusted Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -25,10 +25,8 @@
         .trust-info { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 15px; background: #080808; border-bottom: 1px solid #222; }
         .info-item { font-size: 0.85rem; font-weight: 700; color: #f1d592; display: flex; align-items: center; gap: 8px; }
 
-        /* আইডি গ্রিড */
         .id-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; padding: 40px 20px; max-width: 1300px; margin: 0 auto; }
 
-        /* কার্ড ডিজাইন */
         .id-card { background: #0c0c0c; border: 1px solid #222; border-radius: 20px; overflow: hidden; position: relative; transition: 0.4s; }
         .id-card:hover { transform: translateY(-10px); border-color: var(--border-gold); }
         
@@ -40,16 +38,25 @@
         .details p { color: #a0a0a0; font-size: 0.95rem; line-height: 1.6; margin: 15px 0; min-height: 45px; }
         .price-tag { font-size: 2rem; font-weight: 800; color: #fff; display: block; padding-top: 15px; border-top: 1px solid #222; }
 
-        .order-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--gold); color: #000; text-decoration: none; padding: 18px; font-weight: 800; font-size: 1.1rem; border-radius: 0 0 20px 20px; transition: 0.3s; cursor: pointer; border: none; width: 100%; }
+        .order-btn { display: flex; align-items: center; justify-content: center; background: var(--gold); color: #000; text-decoration: none; padding: 18px; font-weight: 800; font-size: 1.1rem; border-radius: 0 0 20px 20px; transition: 0.3s; cursor: pointer; border: none; width: 100%; }
         .order-btn:hover { background: #fff; }
 
         /* পেমেন্ট মডাল */
-        #paymentModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content:center; align-items:center; }
-        .modal-content { background: #111; border: 2px solid var(--border-gold); padding: 30px; border-radius: 20px; text-align: center; max-width: 420px; width: 90%; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-        .payment-method { background: #1a1a1a; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed var(--border-gold); }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; font-size: 1rem; }
+        #paymentModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; justify-content:center; align-items:center; }
+        .modal-content { background: #111; border: 2px solid var(--border-gold); padding: 25px; border-radius: 20px; text-align: center; max-width: 450px; width: 92%; position: relative; }
+        
+        .payment-method { background: #1a1a1a; padding: 15px; border-radius: 12px; margin: 15px 0; border: 1px dashed var(--border-gold); }
+        .instruction { font-size: 0.8rem; color: #ccc; background: #222; padding: 10px; border-radius: 8px; text-align: left; margin-bottom: 15px; line-height: 1.5; }
+        
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; }
+        
+        /* বাটন গ্রুপ */
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .confirm-btn { flex: 2; background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
+        .support-btn { flex: 1; background: #25D366; color: #fff; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+
         .close-btn { position: absolute; top: 10px; right: 15px; color: #888; font-size: 1.8rem; cursor: pointer; }
-        label { display: block; text-align: left; font-size: 0.8rem; color: #f1d592; margin-top: 10px; font-weight: bold; }
+        label { display: block; text-align: left; font-size: 0.75rem; color: #f1d592; margin-top: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -57,12 +64,12 @@
 <div class="brand-header">
     <div class="logo-container"><img src="logo.png" alt="ID LAGBO"></div>
     <h1>ID LAGBO</h1>
-    <p>বিশ্বস্ত গেমিং মার্কেটপ্লেস</p>
+    <p>সততা ও বিশ্বাসের গেমিং সাম্রাজ্য</p>
 </div>
 
 <div class="trust-info">
     <div class="info-item">🛡️ ১০০% সিকিউর</div>
-    <div class="info-item">⚡ ইনস্ট্যান্ট সাপোর্ট</div>
+    <div class="info-item">⚡ ইনস্ট্যান্ট ডেলিভারি</div>
 </div>
 
 <div class="id-grid" id="market-engine"></div>
@@ -70,19 +77,30 @@
 <div id="paymentModal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 style="color:#f1d592;">পেমেন্ট গেটওয়ে</h2>
+        <h2 style="color:#f1d592; margin-bottom: 10px;">পেমেন্ট গেটওয়ে</h2>
+        
+        <div class="instruction">
+            <b>কিভাবে টাকা পাঠাবেন?</b><br>
+            ১. নিচের নম্বরে বিকাশ বা নগদ থেকে "Send Money" করুন।<br>
+            ২. টাকা পাঠানোর পর আপনার নম্বর ও TrxID নিচের বক্সে দিন।<br>
+            ৩. নিচের "অর্ডার কনফার্ম" বাটনে ক্লিক করুন।
+        </div>
+
         <div class="payment-method">
-            <p style="margin:0; font-size:0.85rem; color:#aaa;">বিকাশ/নগদ (Personal)</p>
+            <p style="margin:0; font-size:0.8rem; color:#aaa;">বিকাশ/নগদ (Personal)</p>
             <b id="displayPayNumber" style="font-size: 1.4rem; color:#fff; letter-spacing: 1px;">01XXXXXXXXX</b>
         </div>
         
-        <label>আপনার বিকাশ/নগদ নম্বর:</label>
+        <label>আপনার নম্বর:</label>
         <input type="number" id="senderNum" placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন">
         
         <label>Transaction ID (TrxID):</label>
         <input type="text" id="trxId" placeholder="TrxID এখানে দিন">
         
-        <button class="order-btn" style="margin-top:20px;" onclick="submitTrx()">অর্ডার কনফার্ম করুন</button>
+        <div class="btn-group">
+            <button class="confirm-btn" onclick="submitTrx()">অর্ডার কনফার্ম</button>
+            <a id="supportLink" href="#" class="support-btn" target="_blank">সরাসরি কথা বলুন</a>
+        </div>
     </div>
 </div>
 
@@ -94,8 +112,8 @@
             desc: "Level 68 | 5 Evo Guns Max | Season 2 Old Elite Pass.",
             price: "4,500",
             youtubeId: "quNRATyRdQY",
-            whatsapp: "8801700000000",  // এই আইডির জন্য হোয়াটসঅ্যাপ
-            payNumber: "01700-000000",   // এই আইডির জন্য বিকাশ/নগদ
+            whatsapp: "8801700000000", 
+            payNumber: "01700-000000",   
             isSold: false
         },
         {
@@ -103,12 +121,11 @@
             desc: "Level 72 | Ranked Master | Rare Blue Skins.",
             price: "12,500",
             youtubeId: "pUgiERw78NU",
-            whatsapp: "8801900000000",  // অন্য আইডির জন্য আলাদা হোয়াটসঅ্যাপ
-            payNumber: "01900-000000",   // অন্য আইডির জন্য আলাদা নম্বর
+            whatsapp: "8801900000000",  
+            payNumber: "01900-000000",   
             isSold: false
         }
     ];
-    // --- কাস্টমাইজেশন শেষ ---
 
     let currentItem = null;
 
@@ -137,6 +154,11 @@
     function openPayment(index) {
         currentItem = inventory[index];
         document.getElementById('displayPayNumber').innerText = currentItem.payNumber;
+        
+        // সাপোর্ট বাটনের লিংক সেট করা
+        let supportMsg = encodeURIComponent(`হ্যালো আইডি লাগবো সাপোর্ট! আমি ${currentItem.name} আইডিটি সম্পর্কে পেমেন্ট করার আগে কিছু জানতে চাই।`);
+        document.getElementById('supportLink').href = `https://wa.me/${currentItem.whatsapp}?text=${supportMsg}`;
+        
         document.getElementById('paymentModal').style.display = 'flex';
     }
 
@@ -155,7 +177,7 @@
             return;
         }
 
-        let message = `নতুন অর্ডার (ID LAGBO)!\n\nআইডি: ${currentItem.name}\nদাম: ৳ ${currentItem.price}\n\nকাস্টমার নম্বর: ${sender}\nTrxID: ${trx}\n\nপেমেন্ট চেক করে আইডি বুঝিয়ে দিন।`;
+        let message = `নতুন অর্ডার এসেছে!\n\nআইডি: ${currentItem.name}\nদাম: ৳ ${currentItem.price}\n\nকাস্টমার নম্বর: ${sender}\nTrxID: ${trx}\n\nপেমেন্ট চেক করে আইডি বুঝিয়ে দিন।`;
         window.open(`https://wa.me/${currentItem.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
         closeModal();
     }
@@ -164,4 +186,5 @@
 </script>
 
 </body>
+    </html>
                                                                                                    </html>
