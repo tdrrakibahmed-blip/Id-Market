@@ -5,112 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rakib's ID Empire | Exclusive Marketplace</title>
     <style>
-        /* প্রিমিয়াম ডিজাইন লজিক */
         :root {
-            --dark-bg: #0a0a0a;
-            --gold: #d4af37; /* রাজকীয় সোনালী */
-            --gold-light: #f1d592;
-            --white: #ffffff;
-            --gray: #888888;
-            --whatsapp: #25d366;
+            --dark: #050505;
+            --gold: linear-gradient(45deg, #d4af37, #f1d592);
+            --border-gold: #c6a152;
+            --text-gray: #a0a0a0;
         }
 
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--dark-bg); color: var(--white); margin: 0; padding: 0; }
+        body { background-color: var(--dark); color: #fff; font-family: 'Poppins', sans-serif; margin: 0; padding-bottom: 50px; }
 
-        /* হেডার ডিজাইন */
-        .header { text-align: center; padding: 40px 20px; border-bottom: 2px solid var(--gold); background: linear-gradient(to bottom, #1a1a1a, #0a0a0a); }
-        .header h1 { color: var(--gold); font-size: 2.8em; margin: 0; text-transform: uppercase; letter-spacing: 3px; text-shadow: 2px 2px 10px rgba(212, 175, 55, 0.3); }
-        .header p { color: var(--gray); font-size: 1.1em; margin-top: 10px; font-style: italic; }
+        /* লোগো ও হেডার */
+        .brand-header { text-align: center; padding: 50px 20px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); border-bottom: 2px solid var(--border-gold); }
+        .brand-header h1 { font-size: 2.5rem; background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 4px; margin: 0; }
+        .brand-header p { color: var(--text-gray); letter-spacing: 2px; font-size: 0.9rem; margin-top: 10px; }
 
-        /* মার্কেট গ্রিড */
-        .container { max-width: 1100px; margin: 30px auto; padding: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        /* আইডি গ্রিড */
+        .id-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto; }
 
-        /* আইডি কার্ড */
-        .card { background: #151515; border: 1px solid #222; border-radius: 15px; overflow: hidden; position: relative; transition: 0.4s; }
-        .card:hover { transform: scale(1.03); border-color: var(--gold); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2); }
+        /* আইডি কার্ড ডিজাইন */
+        .id-card { background: #111; border: 1px solid #222; border-radius: 15px; overflow: hidden; transition: 0.4s ease; position: relative; }
+        .id-card:hover { transform: translateY(-10px); border-color: var(--border-gold); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); }
 
-        /* ভিডিও সেকশন */
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-bottom: 2px solid var(--gold); }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        /* ভিডিও প্লেয়ার */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-        /* কার্ড টেক্সট */
-        .card-info { padding: 20px; text-align: center; }
-        .card-info h3 { color: var(--gold-light); font-size: 1.6em; margin-bottom: 10px; }
-        .card-info p { color: var(--gray); line-height: 1.5; font-size: 0.95em; height: 50px; overflow: hidden; }
+        /* ডিটেইলস */
+        .details { padding: 20px; border-top: 1px solid #222; }
+        .details h2 { margin: 0; font-size: 1.4rem; color: #f1d592; }
+        .details p { color: var(--text-gray); font-size: 0.9rem; margin: 10px 0; min-height: 40px; }
+        
+        .price-tag { font-size: 1.8rem; font-weight: bold; color: #fff; display: block; margin: 15px 0; }
 
-        /* প্রাইস ট্যাগ */
-        .price { font-size: 1.8em; color: var(--gold); font-weight: bold; margin: 15px 0; border-top: 1px solid #333; padding-top: 15px; }
-
-        /* আকর্ষণীয় হোয়াটসঅ্যাপ বাটন */
-        .wa-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: var(--whatsapp); color: #000; text-decoration: none; padding: 15px; border-radius: 0 0 15px 15px; font-weight: 800; font-size: 1.2em; transition: 0.3s; box-shadow: 0 -5px 15px rgba(37, 211, 102, 0.2); }
-        .wa-btn:hover { background-color: #1ebe57; color: #fff; }
-        .wa-btn img { width: 28px; height: 28px; }
-
-        /* মোবাইল রেসপন্সিভ */
-        @media (max-width: 600px) {
-            .header h1 { font-size: 2em; }
-        }
+        /* প্রিমিয়াম হোয়াটসঅ্যাপ বাটন */
+        .order-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--gold); color: #000; text-decoration: none; padding: 16px; font-weight: bold; border-radius: 0 0 15px 15px; transition: 0.3s; }
+        .order-btn:hover { filter: brightness(1.2); }
+        .order-btn img { width: 24px; }
     </style>
 </head>
 <body>
 
-<div class="header">
+<div class="brand-header">
     <h1>RAKIB'S ID EMPIRE</h1>
-    <p>The Most Trusted Marketplace for Premium Free Fire IDs</p>
+    <p>TRUSTED • SECURE • PREMIUM</p>
 </div>
 
-<div class="container" id="market">
+<div class="id-grid" id="main-engine">
     </div>
 
 <script>
-    // আপনার হোয়াটসঅ্যাপ নম্বর (লিঙ্ক তৈরির জন্য)
-    const myPhone = "8801XXXXXXXXX"; // এখানে আপনার নম্বর বসাবেন
-
-    // আইডির তালিকা (এখানে নতুন আইডি যোগ করবেন)
-    const idData = [
+    // আপনার কন্ট্রোল রুম (নতুন আইডি এখানে যোগ করুন)
+    const inventory = [
         {
-            title: "Elite Cobra Max #001",
-            desc: "Level 68 | 5 Evo Guns Max | Old Elite Pass skins included.",
+            name: "COBRA MAX #001",
+            desc: "Level 68 | 5 Evo Guns Max | Season 2 Old Elite Pass.",
             price: "4,500",
-            vidID: "quNRATyRdQY" // আপনার প্রথম ভিডিও আইডি
+            youtubeId: "quNRATyRdQY",
+            whatsapp: "8801XXXXXXXXX" // এখানে নম্বর দিন
         },
         {
-            title: "Rare Hip-Hop Pro #002",
-            desc: "Level 72 | Ranked Master | All Blue Skins | 100% Secure.",
-            price: "12,000",
-            vidID: "pUgiERw78NU" // আপনার দ্বিতীয় ভিডিও আইডি
+            name: "HIP HOP BUNDLE #002",
+            desc: "Level 72 | Ranked Master | Rare Blue Skins.",
+            price: "12,500",
+            youtubeId: "pUgiERw78NU",
+            whatsapp: "8801XXXXXXXXX" // এখানে নম্বর দিন
         }
     ];
 
-    function renderIDs() {
-        const market = document.getElementById('market');
-        market.innerHTML = '';
+    function loadInventory() {
+        const engine = document.getElementById('main-engine');
+        engine.innerHTML = '';
 
-        idData.forEach(item => {
-            const message = encodeURIComponent(`হ্যালো রাকিব ভাই, আমি এই আইডিটি কিনতে আগ্রহী:\nআইডি: ${item.title}\nদাম: ${item.price} টাকা।\nঅনুগ্রহ করে বিস্তারিত জানান।`);
+        inventory.forEach(item => {
+            const waMsg = encodeURIComponent(`হ্যালো রাকিব ভাই, আমি এই আইডিটি কিনতে চাই:\nআইডি: ${item.name}\nদাম: ${item.price} টাকা।`);
             
-            market.innerHTML += `
-                <div class="card">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/${item.vidID}" allowfullscreen></iframe>
+            engine.innerHTML += `
+                <div class="id-card">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${item.youtubeId}" allowfullscreen></iframe>
                     </div>
-                    <div class="card-info">
-                        <h3>${item.title}</h3>
+                    <div class="details">
+                        <h2>${item.name}</h2>
                         <p>${item.desc}</p>
-                        <div class="price">৳ ${item.price}</div>
+                        <span class="price-tag">৳ ${item.price}</span>
                     </div>
-                    <a href="https://wa.me/${myPhone}?text=${message}" target="_blank" class="wa-btn">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
-                        অর্ডার করতে মেসেজ দিন
+                    <a href="https://wa.me/${item.whatsapp}?text=${waMsg}" class="order-btn" target="_blank">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+                        অর্ডার নিশ্চিত করুন
                     </a>
                 </div>
             `;
         });
     }
 
-    // ওয়েবসাইট লোড হলে ফাংশনটি চলবে
-    renderIDs();
+    loadInventory();
 </script>
 
 </body>
-    </html>
+</html>
