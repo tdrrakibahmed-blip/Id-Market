@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID LAGBO | Trusted Payment Gateway</title>
+    <title>ID LAGBO | Secure Payment Gateway</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -32,10 +32,6 @@
         .id-card { background: #0c0c0c; border: 1px solid #222; border-radius: 20px; overflow: hidden; position: relative; transition: 0.4s; }
         .id-card:hover { transform: translateY(-10px); border-color: var(--border-gold); }
         
-        .status-badge { position: absolute; top: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; z-index: 10; }
-        .status-available { background: var(--available); color: #000; }
-        .status-sold { background: var(--sold); color: #fff; }
-
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; border-bottom: 1px solid #333; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
@@ -48,11 +44,13 @@
         .order-btn:hover { background: #fff; }
 
         /* পেমেন্ট উইন্ডো স্টাইল */
-        #paymentModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; justify-content:center; align-items:center; }
-        .modal-content { background: #111; border: 2px solid var(--border-gold); padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; position: relative; }
-        .timer { color: #e74c3c; font-weight: bold; font-size: 1.8rem; margin: 10px 0; }
-        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; }
-        .close-btn { position: absolute; top: 10px; right: 15px; color: #888; font-size: 1.5rem; cursor: pointer; }
+        #paymentModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content:center; align-items:center; }
+        .modal-content { background: #111; border: 2px solid var(--border-gold); padding: 30px; border-radius: 20px; text-align: center; max-width: 420px; width: 90%; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .modal-content h2 { color: #f1d592; margin-bottom: 5px; }
+        .payment-method { background: #1a1a1a; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed var(--border-gold); }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; font-size: 1rem; }
+        .close-btn { position: absolute; top: 10px; right: 15px; color: #888; font-size: 1.8rem; cursor: pointer; }
+        label { display: block; text-align: left; font-size: 0.8rem; color: #f1d592; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -64,8 +62,8 @@
 </div>
 
 <div class="trust-info">
-    <div class="info-item">🛡️ ১০০% ফুল সিকিউরিটি</div>
-    <div class="info-item">⚡ ১০ মিনিটে ডেলিভারি</div>
+    <div class="info-item">🛡️ ১০০% সিকিউর লেনদেন</div>
+    <div class="info-item">⚡ ইনস্ট্যান্ট ডেলিভারি সাপোর্ট</div>
 </div>
 
 <div class="id-grid" id="market-engine"></div>
@@ -73,19 +71,27 @@
 <div id="paymentModal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 style="color:#f1d592;">পেমেন্ট করুন</h2>
-        <p style="font-size: 0.9rem;">বিকাশ/নগদ (Personal): <br><b style="font-size: 1.3rem; color:#fff;">01XXXXXXXXX</b></p>
-        <p>সময় বাকি:</p>
-        <div class="timer" id="timer">10:00</div>
-        <input type="text" id="trxId" placeholder="Transaction ID (TrxID) লিখুন">
-        <button class="order-btn" onclick="submitTrx()">পেমেন্ট কনফার্ম করুন</button>
+        <h2>পেমেন্ট গেটওয়ে</h2>
+        <div class="payment-method">
+            <p style="margin:0; font-size:0.85rem; color:#aaa;">বিকাশ/নগদ (Personal)</p>
+            <b style="font-size: 1.4rem; color:#fff; letter-spacing: 1px;">01XXXXXXXXX</b>
+        </div>
+        
+        <label>আপনার বিকাশ/নগদ নম্বর:</label>
+        <input type="number" id="senderNum" placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন">
+        
+        <label>Transaction ID (TrxID):</label>
+        <input type="text" id="trxId" placeholder="TrxID এখানে দিন">
+        
+        <button class="order-btn" style="margin-top:20px;" onclick="submitTrx()">অর্ডার কনফার্ম করুন</button>
+        <p style="font-size: 0.75rem; color: #777; margin-top:15px;">টাকা পাঠানোর পর উপরের তথ্যগুলো দিয়ে কনফার্ম করুন। আমাদের টিম চেক করে সরাসরি আপনার হোয়াটসঅ্যাপে আইডি পাঠিয়ে দেবে।</p>
     </div>
 </div>
 
 <script>
     let selectedID = "";
     let selectedPrice = "";
-    let adminPhone = "8801XXXXXXXXX"; // আপনার হোয়াটসঅ্যাপ নম্বর দিন
+    let adminPhone = "8801XXXXXXXXX"; // এখানে আপনার হোয়াটসঅ্যাপ নম্বর দিন
 
     const inventory = [
         {
@@ -93,6 +99,13 @@
             desc: "Level 68 | 5 Evo Guns Max | Season 2 Old Elite Pass.",
             price: "4,500",
             youtubeId: "quNRATyRdQY",
+            isSold: false
+        },
+        {
+            name: "HIP HOP BUNDLE #002",
+            desc: "Level 72 | Ranked Master | Rare Blue Skins.",
+            price: "12,500",
+            youtubeId: "pUgiERw78NU",
             isSold: false
         }
     ];
@@ -103,7 +116,6 @@
             if(!item.isSold) {
                 engine.innerHTML += `
                     <div class="id-card">
-                        <div class="status-badge status-available">Available</div>
                         <div class="video-container">
                             <iframe src="https://www.youtube.com/embed/${item.youtubeId}" allowfullscreen></iframe>
                         </div>
@@ -112,7 +124,7 @@
                             <p>${item.desc}</p>
                             <span class="price-tag">৳ ${item.price}</span>
                         </div>
-                        <button class="order-btn" onclick="openPayment('${item.name}', '${item.price}')">অর্ডার নিশ্চিত করুন</button>
+                        <button class="order-btn" onclick="openPayment('${item.name}', '${item.price}')">এখনই কিনুন</button>
                     </div>
                 `;
             }
@@ -123,34 +135,22 @@
         selectedID = name;
         selectedPrice = price;
         document.getElementById('paymentModal').style.display = 'flex';
-        startTimer(600); // ১০ মিনিট
     }
 
     function closeModal() {
         document.getElementById('paymentModal').style.display = 'none';
     }
 
-    function startTimer(duration) {
-        let timer = duration, minutes, seconds;
-        let display = document.getElementById('timer');
-        let countdown = setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-            display.textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
-            if (--timer < 0) {
-                clearInterval(countdown);
-                closeModal();
-            }
-        }, 1000);
-    }
-
     function submitTrx() {
+        let sender = document.getElementById('senderNum').value;
         let trx = document.getElementById('trxId').value;
-        if(trx.length < 5) {
-            alert("অনুগ্রহ করে সঠিক Transaction ID দিন।");
+
+        if(sender.length < 11 || trx.length < 5) {
+            alert("অনুগ্রহ করে সঠিক নম্বর এবং Transaction ID দিন।");
             return;
         }
-        let message = `হ্যালো আইডি লাগবো!\n\nআমি পেমেন্ট করেছি।\nআইডি: ${selectedID}\nদাম: ৳ ${selectedPrice}\nTrxID: ${trx}\n\nদয়া করে চেক করে আইডি বুঝিয়ে দিন।`;
+
+        let message = `নতুন অর্ডার এসেছে!\n\nআইডি: ${selectedID}\nদাম: ৳ ${selectedPrice}\n\nকাস্টমার নম্বর: ${sender}\nTrxID: ${trx}\n\nদয়া করে পেমেন্ট চেক করে আইডি পাঠিয়ে দিন।`;
         window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`, '_blank');
         closeModal();
     }
@@ -159,4 +159,4 @@
 </script>
 
 </body>
-    </html>
+</html>
