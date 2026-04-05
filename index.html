@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID LAGBO | The Trusted ID Empire</title>
+    <title>ID LAGBO | Trusted Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,29 +14,26 @@
             --sold: #e74c3c;
         }
 
-        body { font-family: 'Poppins', sans-serif; background-color: var(--dark-core); color: #fff; margin: 0; padding-bottom: 50px; overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--dark-core); color: #fff; margin: 0; padding-bottom: 50px; }
 
         /* হেডার - লোগো ও নাম (ফিক্সড) */
         .brand-header { text-align: center; padding: 60px 20px; background: radial-gradient(circle, #151515 0%, var(--dark-core) 100%); border-bottom: 3px solid var(--border-gold); }
         .logo-container { width: 130px; height: 130px; margin: 0 auto; border-radius: 50%; padding: 4px; background: var(--gold); box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); overflow: hidden; }
         .brand-header img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
-        .brand-header h1 { font-size: 2.8rem; font-weight: 800; background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0 5px; letter-spacing: 4px; }
-        .brand-header p { color: #888; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
-
-        /* লাইভ কাউন্টার ডিজাইন */
-        .live-counter { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border-gold); display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 50px; margin-top: 20px; font-size: 0.9rem; font-weight: 600; color: #f1d592; }
-        .dot { height: 10px; width: 10px; background-color: #ff0000; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        /* ট্রাস্ট সেকশন */
-        .trust-bar { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; background: #080808; border-bottom: 1px solid #222; font-size: 0.85rem; font-weight: 600; color: var(--border-gold); }
+        .brand-header h1 { font-size: 2.8rem; font-weight: 800; background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0 5px; letter-spacing: 4px; text-transform: uppercase; }
+        
+        /* ট্রাস্ট সেকশন (জেনুইন ইনফো) */
+        .trust-info { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 15px; background: #080808; border-bottom: 1px solid #222; }
+        .info-item { font-size: 0.85rem; font-weight: 700; color: #f1d592; display: flex; align-items: center; gap: 8px; }
 
         /* আইডি গ্রিড */
         .id-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; padding: 40px 20px; max-width: 1300px; margin: 0 auto; }
 
-        /* আইডি কার্ড */
+        /* কার্ড ও ভেরিফাইড ব্যাজ */
         .id-card { background: #0c0c0c; border: 1px solid #222; border-radius: 20px; overflow: hidden; position: relative; transition: 0.4s; }
         .id-card:hover { transform: translateY(-10px); border-color: var(--border-gold); }
+        
+        .verified-badge { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); border: 1px solid var(--border-gold); color: #f1d592; padding: 4px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; z-index: 11; }
 
         .status-badge { position: absolute; top: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; z-index: 10; }
         .status-available { background: var(--available); color: #000; }
@@ -62,34 +59,18 @@
         <img src="logo.png" alt="ID LAGBO">
     </div>
     <h1>ID LAGBO</h1>
-    <p>THE TRUSTED ID EMPIRE</p>
-    
-    <div class="live-counter">
-        <span class="dot"></span>
-        <span id="viewer-count">7</span> জন এখন এই ওয়েবসাইট দেখছেন
-    </div>
+    <p>সততা ও বিশ্বাসের সাথে আপনার গেমিং পার্টনার</p>
 </div>
 
-<div class="trust-bar">
-    <span>🛡️ 100% SECURE</span>
-    <span>⚡ FAST DELIVERY</span>
-    <span>🤝 VERIFIED OWNER</span>
+<div class="trust-info">
+    <div class="info-item">✅ সরাসরি মালিকের আইডি</div>
+    <div class="info-item">🛡️ ১০০% ফুল সিকিউরিটি</div>
+    <div class="info-item">⭐ ৫/৫ কাস্টমার স্যাটিসফ্যাকশন</div>
 </div>
 
 <div class="id-grid" id="market-engine"></div>
 
 <script>
-    // লাইভ কাউন্টার লজিক
-    function updateViewers() {
-        let count = parseInt(document.getElementById('viewer-count').innerText);
-        let change = Math.floor(Math.random() * 3) - 1; // -1, 0, বা +1 পরিবর্তন
-        let newCount = count + change;
-        if(newCount < 3) newCount = 5; // ৩ এর নিচে নামবে না
-        if(newCount > 15) newCount = 12; // ১৫ এর উপরে উঠবে না
-        document.getElementById('viewer-count').innerText = newCount;
-    }
-    setInterval(updateViewers, 5000); // প্রতি ৫ সেকেন্ডে আপডেট হবে
-
     const inventory = [
         {
             name: "COBRA MAX #001",
@@ -98,14 +79,6 @@
             youtubeId: "quNRATyRdQY",
             whatsapp: "8801XXXXXXXXX",
             isSold: false
-        },
-        {
-            name: "HIP HOP BUNDLE #002",
-            desc: "Level 72 | Ranked Master | Rare Blue Skins.",
-            price: "12,500",
-            youtubeId: "pUgiERw78NU",
-            whatsapp: "8801XXXXXXXXX",
-            isSold: true
         }
     ];
 
@@ -116,10 +89,10 @@
             const statusText = item.isSold ? 'Sold Out' : 'Available';
             const btnClass = item.isSold ? 'order-btn sold' : 'order-btn';
             const btnText = item.isSold ? 'Stock Out' : 'অর্ডার নিশ্চিত করুন';
-            const waMsg = encodeURIComponent(`হ্যালো আইডি লাগবো, আমি এই আইডিটি নিতে চাই:\nআইডি: ${item.name}\nদাম: ৳ ${item.price}`);
             
             engine.innerHTML += `
                 <div class="id-card">
+                    <div class="verified-badge">✓ VERIFIED ID</div>
                     <div class="status-badge ${statusClass}">${statusText}</div>
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/${item.youtubeId}" allowfullscreen></iframe>
@@ -129,7 +102,7 @@
                         <p>${item.desc}</p>
                         <span class="price-tag">৳ ${item.price}</span>
                     </div>
-                    <a href="https://wa.me/${item.whatsapp}?text=${waMsg}" class="${btnClass}" target="_blank">
+                    <a href="https://wa.me/${item.whatsapp}" class="${btnClass}" target="_blank">
                         ${btnText}
                     </a>
                 </div>
@@ -140,4 +113,4 @@
 </script>
 
 </body>
-        </html>
+</html>
