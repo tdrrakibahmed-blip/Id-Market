@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID LAGBO | Trusted Marketplace</title>
+    <title>ID LAGBO | Trusted Payment Gateway</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,19 +22,16 @@
         .brand-header img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
         .brand-header h1 { font-size: 2.8rem; font-weight: 800; background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0 5px; letter-spacing: 4px; text-transform: uppercase; }
         
-        /* ট্রাস্ট সেকশন (জেনুইন ইনফো) */
         .trust-info { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 15px; background: #080808; border-bottom: 1px solid #222; }
         .info-item { font-size: 0.85rem; font-weight: 700; color: #f1d592; display: flex; align-items: center; gap: 8px; }
 
         /* আইডি গ্রিড */
         .id-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; padding: 40px 20px; max-width: 1300px; margin: 0 auto; }
 
-        /* কার্ড ও ভেরিফাইড ব্যাজ */
+        /* কার্ড ডিজাইন */
         .id-card { background: #0c0c0c; border: 1px solid #222; border-radius: 20px; overflow: hidden; position: relative; transition: 0.4s; }
         .id-card:hover { transform: translateY(-10px); border-color: var(--border-gold); }
         
-        .verified-badge { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); border: 1px solid var(--border-gold); color: #f1d592; padding: 4px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; z-index: 11; }
-
         .status-badge { position: absolute; top: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; z-index: 10; }
         .status-available { background: var(--available); color: #000; }
         .status-sold { background: var(--sold); color: #fff; }
@@ -47,37 +44,55 @@
         .details p { color: #a0a0a0; font-size: 0.95rem; line-height: 1.6; margin: 15px 0; }
         .price-tag { font-size: 2rem; font-weight: 800; color: #fff; display: block; padding-top: 15px; border-top: 1px solid #222; }
 
-        .order-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--gold); color: #000; text-decoration: none; padding: 18px; font-weight: 800; font-size: 1.1rem; border-radius: 0 0 20px 20px; transition: 0.3s; }
+        .order-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--gold); color: #000; text-decoration: none; padding: 18px; font-weight: 800; font-size: 1.1rem; border-radius: 0 0 20px 20px; transition: 0.3s; cursor: pointer; border: none; width: 100%; }
         .order-btn:hover { background: #fff; }
-        .order-btn.sold { background: #333; color: #666; pointer-events: none; }
+
+        /* পেমেন্ট উইন্ডো স্টাইল */
+        #paymentModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; justify-content:center; align-items:center; }
+        .modal-content { background: #111; border: 2px solid var(--border-gold); padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; position: relative; }
+        .timer { color: #e74c3c; font-weight: bold; font-size: 1.8rem; margin: 10px 0; }
+        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; }
+        .close-btn { position: absolute; top: 10px; right: 15px; color: #888; font-size: 1.5rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="brand-header">
-    <div class="logo-container">
-        <img src="logo.png" alt="ID LAGBO">
-    </div>
+    <div class="logo-container"><img src="logo.png" alt="ID LAGBO"></div>
     <h1>ID LAGBO</h1>
     <p>সততা ও বিশ্বাসের সাথে আপনার গেমিং পার্টনার</p>
 </div>
 
 <div class="trust-info">
-    <div class="info-item">✅ সরাসরি মালিকের আইডি</div>
     <div class="info-item">🛡️ ১০০% ফুল সিকিউরিটি</div>
-    <div class="info-item">⭐ ৫/৫ কাস্টমার স্যাটিসফ্যাকশন</div>
+    <div class="info-item">⚡ ১০ মিনিটে ডেলিভারি</div>
 </div>
 
 <div class="id-grid" id="market-engine"></div>
 
+<div id="paymentModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 style="color:#f1d592;">পেমেন্ট করুন</h2>
+        <p style="font-size: 0.9rem;">বিকাশ/নগদ (Personal): <br><b style="font-size: 1.3rem; color:#fff;">01XXXXXXXXX</b></p>
+        <p>সময় বাকি:</p>
+        <div class="timer" id="timer">10:00</div>
+        <input type="text" id="trxId" placeholder="Transaction ID (TrxID) লিখুন">
+        <button class="order-btn" onclick="submitTrx()">পেমেন্ট কনফার্ম করুন</button>
+    </div>
+</div>
+
 <script>
+    let selectedID = "";
+    let selectedPrice = "";
+    let adminPhone = "8801XXXXXXXXX"; // আপনার হোয়াটসঅ্যাপ নম্বর দিন
+
     const inventory = [
         {
             name: "COBRA MAX #001",
             desc: "Level 68 | 5 Evo Guns Max | Season 2 Old Elite Pass.",
             price: "4,500",
             youtubeId: "quNRATyRdQY",
-            whatsapp: "8801XXXXXXXXX",
             isSold: false
         }
     ];
@@ -85,32 +100,63 @@
     function loadInventory() {
         const engine = document.getElementById('market-engine');
         inventory.forEach(item => {
-            const statusClass = item.isSold ? 'status-sold' : 'status-available';
-            const statusText = item.isSold ? 'Sold Out' : 'Available';
-            const btnClass = item.isSold ? 'order-btn sold' : 'order-btn';
-            const btnText = item.isSold ? 'Stock Out' : 'অর্ডার নিশ্চিত করুন';
-            
-            engine.innerHTML += `
-                <div class="id-card">
-                    <div class="verified-badge">✓ VERIFIED ID</div>
-                    <div class="status-badge ${statusClass}">${statusText}</div>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/${item.youtubeId}" allowfullscreen></iframe>
+            if(!item.isSold) {
+                engine.innerHTML += `
+                    <div class="id-card">
+                        <div class="status-badge status-available">Available</div>
+                        <div class="video-container">
+                            <iframe src="https://www.youtube.com/embed/${item.youtubeId}" allowfullscreen></iframe>
+                        </div>
+                        <div class="details">
+                            <h2>${item.name}</h2>
+                            <p>${item.desc}</p>
+                            <span class="price-tag">৳ ${item.price}</span>
+                        </div>
+                        <button class="order-btn" onclick="openPayment('${item.name}', '${item.price}')">অর্ডার নিশ্চিত করুন</button>
                     </div>
-                    <div class="details">
-                        <h2>${item.name}</h2>
-                        <p>${item.desc}</p>
-                        <span class="price-tag">৳ ${item.price}</span>
-                    </div>
-                    <a href="https://wa.me/${item.whatsapp}" class="${btnClass}" target="_blank">
-                        ${btnText}
-                    </a>
-                </div>
-            `;
+                `;
+            }
         });
     }
+
+    function openPayment(name, price) {
+        selectedID = name;
+        selectedPrice = price;
+        document.getElementById('paymentModal').style.display = 'flex';
+        startTimer(600); // ১০ মিনিট
+    }
+
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        let display = document.getElementById('timer');
+        let countdown = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+            display.textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+            if (--timer < 0) {
+                clearInterval(countdown);
+                closeModal();
+            }
+        }, 1000);
+    }
+
+    function submitTrx() {
+        let trx = document.getElementById('trxId').value;
+        if(trx.length < 5) {
+            alert("অনুগ্রহ করে সঠিক Transaction ID দিন।");
+            return;
+        }
+        let message = `হ্যালো আইডি লাগবো!\n\nআমি পেমেন্ট করেছি।\nআইডি: ${selectedID}\nদাম: ৳ ${selectedPrice}\nTrxID: ${trx}\n\nদয়া করে চেক করে আইডি বুঝিয়ে দিন।`;
+        window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`, '_blank');
+        closeModal();
+    }
+
     loadInventory();
 </script>
 
 </body>
-</html>
+    </html>
