@@ -1,0 +1,53 @@
+<div class="header">
+    <img src="YOUR_LOGO_URL_HERE" alt="Logo" style="width: 80px; margin-bottom: 10px;">
+    <h1>RAKIB'S ID EMPIRE</h1>
+    <p>Premium Free Fire ID Marketplace</p>
+</div>
+
+<script>
+    const idData = [
+        {
+            title: "Cobra Max #001",
+            desc: "Level 68 | 5 Evo Guns Max",
+            price: "4,500",
+            vidID: "quNRATyRdQY",
+            whatsapp: "88017XXXXXXXX" // এই আইডির জন্য নির্দিষ্ট নম্বর
+        },
+        {
+            title: "Hip Hop Pro #002",
+            desc: "Level 72 | Ranked Master",
+            price: "12,000",
+            vidID: "pUgiERw78NU",
+            whatsapp: "88019XXXXXXXX" // অন্য কোনো নম্বর (যেমন আপনার বন্ধুর)
+        }
+    ];
+
+    function renderIDs() {
+        const market = document.getElementById('market');
+        market.innerHTML = '';
+
+        idData.forEach(item => {
+            // এখানে ডায়নামিক নম্বর সেট করা হয়েছে
+            const message = encodeURIComponent(`হ্যালো, আমি এই আইডিটি কিনতে চাই:\nআইডি: ${item.title}\nদাম: ${item.price} টাকা।`);
+            const waLink = `https://wa.me/${item.whatsapp}?text=${message}`;
+            
+            market.innerHTML += `
+                <div class="card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/${item.vidID}" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-info">
+                        <h3>${item.title}</h3>
+                        <p>${item.desc}</p>
+                        <div class="price">৳ ${item.price}</div>
+                    </div>
+                    <a href="${waLink}" target="_blank" class="wa-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
+                        সরাসরি মালিকের সাথে কথা বলুন
+                    </a>
+                </div>
+            `;
+        });
+    }
+    renderIDs();
+  </script>
