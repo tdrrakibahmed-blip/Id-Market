@@ -2,73 +2,115 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>ID LAGBO | Pro Marketplace</title>
+    <title>ID LAGBO | Binary Trading Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --main-gold: #d4af37; --dark: #111; }
-        body { background: #050505; color: #fff; font-family: sans-serif; margin: 0; }
-        .nav { background: var(--dark); padding: 20px; border-bottom: 2px solid var(--main-gold); text-align: center; }
-        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
-        .product-card { background: var(--dark); border: 1px solid #333; border-radius: 10px; padding: 15px; text-align: center; }
-        .product-card img { width: 100%; border-radius: 5px; }
-        .price { color: var(--main-gold); font-size: 1.5rem; margin: 10px 0; }
-        .order-btn { background: var(--main-gold); color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
-        /* অ্যাডমিন প্যানেল (Hidden) */
-        .admin-link { position: fixed; bottom: 10px; right: 10px; color: #444; font-size: 10px; text-decoration: none; }
+        :root { --up: #00ff88; --down: #ff3344; --bg: #0b0e11; }
+        body { background: var(--bg); color: #fff; font-family: 'Roboto', sans-serif; margin: 0; overflow: hidden; }
+        
+        /* ড্যাশবোর্ড হেডার */
+        .header { display: flex; justify-content: space-between; padding: 15px 25px; background: #181a20; border-bottom: 1px solid #2b2f36; }
+        .balance-box { color: var(--up); font-family: 'Orbitron'; font-size: 1.2rem; }
+
+        /* চার্ট এরিয়া */
+        .chart-container { height: 60vh; background: #111; position: relative; margin: 20px; border: 1px solid #2b2f36; display: flex; align-items: flex-end; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; }
+        .candle { width: 30px; margin: 0 5px; position: relative; transition: height 0.5s; }
+        .wick { width: 2px; height: 120%; background: #444; position: absolute; left: 50%; bottom: -10%; transform: translateX(-50%); z-index: -1; }
+
+        /* কন্ট্রোল প্যানেল */
+        .controls { display: flex; justify-content: center; gap: 20px; padding: 20px; background: #181a20; position: fixed; bottom: 0; width: 100%; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        input { background: #2b2f36; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; width: 80px; }
+        .btn { padding: 15px 40px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
+        .btn-up { background: var(--up); color: #000; }
+        .btn-down { background: var(--down); color: #fff; }
+        .btn:active { transform: scale(0.9); }
+
+        /* রেজাল্ট পপআপ */
+        #notification { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); padding: 20px 40px; border-radius: 10px; font-weight: bold; display: none; z-index: 100; font-family: 'Orbitron'; }
     </style>
 </head>
 <body>
 
-<div class="nav">
-    <h1 id="shopName">আমার ডিজিটাল শপ</h1>
-    <p id="shopTagline">কম খরচে সেরা পণ্য</p>
+<div class="header">
+    <div style="font-family: 'Orbitron'; color: #d4af37;">ID LAGBO TRADER</div>
+    <div class="balance-box">Wallet: $<span id="balance">100.00</span></div>
 </div>
 
-<div class="container" id="productGrid">
-    <div class="product-card">
-        <img src="https://via.placeholder.com/200" alt="Product">
-        <h3>লোডিং হচ্ছে...</h3>
-        <p class="price">৳ 00</p>
-        <button class="order-btn">অর্ডার করুন</button>
+<div class="chart-container" id="chart">
     </div>
+
+<div id="notification"></div>
+
+<div class="controls">
+    <div class="input-group">
+        <label style="font-size: 10px; color: #888;">AMOUNT</label>
+        <input type="number" id="betAmount" value="10">
+    </div>
+    <button class="btn btn-up" onclick="placeTrade('up')">HIGHER (Buy)</button>
+    <button class="btn btn-down" onclick="placeTrade('down')">LOWER (Sell)</button>
 </div>
 
 <script>
-    // --- ক্লায়েন্টের কনফিগারেশন (যা আপনি বিক্রি করবেন) ---
-    const config = {
-        whatsapp: "8801700000000", // দোকানদারের নম্বর
-        shopName: "Rakib's Tech Store",
-        currency: "৳"
-    };
+    let balance = 100.00;
+    let winCount = 0;
+    const chart = document.getElementById('chart');
 
-    // পণ্যের ডাটা (এটি ভবিষ্যতে Google Sheet থেকে আসবে)
-    const products = [
-        { name: "স্মার্ট ওয়াচ", price: "2500", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200" },
-        { name: "গেমিং হেডফোন", price: "1800", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200" }
-    ];
-
-    function loadProducts() {
-        document.getElementById('shopName').innerText = config.shopName;
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = "";
-
-        products.forEach(p => {
-            grid.innerHTML += `
-                <div class="product-card">
-                    <img src="${p.img}" alt="${p.name}">
-                    <h3>${p.name}</h3>
-                    <p class="price">${config.currency} ${p.price}</p>
-                    <button class="order-btn" onclick="sendOrder('${p.name}', '${p.price}')">WhatsApp এ অর্ডার দিন</button>
-                </div>
-            `;
-        });
+    // কাল্পনিক ক্যান্ডেল তৈরি করা
+    function generateCandle(type, height) {
+        const candle = document.createElement('div');
+        candle.className = 'candle';
+        candle.style.height = height + 'px';
+        candle.style.backgroundColor = type === 'up' ? 'var(--up)' : 'var(--down)';
+        candle.innerHTML = '<div class="wick"></div>';
+        
+        if (chart.children.length > 15) chart.removeChild(chart.firstChild);
+        chart.appendChild(candle);
     }
 
-    function sendOrder(name, price) {
-        const msg = encodeURIComponent(`নতুন অর্ডার!\nপণ্য: ${name}\nদাম: ${price}\nআমি এটি কিনতে চাই।`);
-        window.open(`https://wa.me/${config.whatsapp}?text=${msg}`, '_blank');
+    // শুরুতে কিছু ক্যান্ডেল দিয়ে চার্ট সাজানো
+    for(let i=0; i<12; i++) {
+        generateCandle(Math.random() > 0.5 ? 'up' : 'down', Math.random() * 150 + 50);
     }
 
-    loadProducts();
+    function placeTrade(direction) {
+        const amount = parseFloat(document.getElementById('betAmount').value);
+        if (amount > balance) return alert("ব্যালেন্স নেই!");
+
+        const notify = document.getElementById('notification');
+        notify.style.display = 'block';
+        notify.style.background = '#333';
+        notify.innerText = "Trade Active: 5s remaining...";
+
+        // সাইকোলজিক্যাল গেম লজিক
+        setTimeout(() => {
+            let isWin;
+            winCount++;
+
+            // সিক্রেট লজিক: শুরুতে ৩বার জিতবে, তারপর হারবে, শেষে গিয়ে লাভ দেখাবে
+            if (winCount <= 3) isWin = true; 
+            else if (winCount % 3 === 0) isWin = false; // প্রতি ৩ বারে একবার লস
+            else isWin = Math.random() > 0.4; // ৬০% উইন রেট (যাতে সে নেশায় পড়ে যায়)
+
+            if (isWin) {
+                const profit = amount * 0.85;
+                balance += profit;
+                notify.style.background = 'var(--up)';
+                notify.style.color = '#000';
+                notify.innerText = `YOU WIN! +$${profit.toFixed(2)}`;
+                generateCandle('up', 180);
+            } else {
+                balance -= amount;
+                notify.style.background = 'var(--down)';
+                notify.style.color = '#fff';
+                notify.innerText = `LOSS! -$${amount.toFixed(2)}`;
+                generateCandle('down', 180);
+            }
+
+            document.getElementById('balance').innerText = balance.toFixed(2);
+            setTimeout(() => notify.style.display = 'none', 2000);
+        }, 3000); // ৩ সেকেন্ডের ফাস্ট ট্রেড
+    }
 </script>
 
 </body>
