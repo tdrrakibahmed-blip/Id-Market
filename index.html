@@ -1,117 +1,145 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ID LAGBO | Binary Trading Simulation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quotex | Trading Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --up: #00ff88; --down: #ff3344; --bg: #0b0e11; }
-        body { background: var(--bg); color: #fff; font-family: 'Roboto', sans-serif; margin: 0; overflow: hidden; }
+        :root { --q-bg: #121926; --q-panel: #1c2535; --up: #00c9a7; --down: #ff4a5a; --gold: #fcc419; }
+        body { background: var(--q-bg); color: #fff; font-family: 'Roboto', sans-serif; margin: 0; overflow: hidden; height: 100vh; }
         
-        /* ড্যাশবোর্ড হেডার */
-        .header { display: flex; justify-content: space-between; padding: 15px 25px; background: #181a20; border-bottom: 1px solid #2b2f36; }
-        .balance-box { color: var(--up); font-family: 'Orbitron'; font-size: 1.2rem; }
+        /* উপরের স্ট্যাটাস বার */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--q-panel); border-bottom: 1px solid #2a364a; }
+        .balance { color: var(--up); font-weight: bold; font-size: 1.1rem; }
+        .demo-tag { background: var(--gold); color: #000; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-left: 5px; }
 
-        /* চার্ট এরিয়া */
-        .chart-container { height: 60vh; background: #111; position: relative; margin: 20px; border: 1px solid #2b2f36; display: flex; align-items: flex-end; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; }
-        .candle { width: 30px; margin: 0 5px; position: relative; transition: height 0.5s; }
-        .wick { width: 2px; height: 120%; background: #444; position: absolute; left: 50%; bottom: -10%; transform: translateX(-50%); z-index: -1; }
+        /* চার্ট এরিয়া (মোবাইল ভিউ) */
+        .chart-area { height: 55vh; position: relative; padding: 10px; display: flex; align-items: flex-end; gap: 4px; overflow: hidden; background: linear-gradient(to bottom, #121926, #161e2b); }
+        .candle { width: 14px; position: relative; flex-shrink: 0; transition: height 0.4s; border-radius: 1px; }
+        .wick { width: 1px; height: 140%; background: #4a5a6a; position: absolute; left: 50%; top: -20%; transform: translateX(-50%); z-index: 0; }
 
-        /* কন্ট্রোল প্যানেল */
-        .controls { display: flex; justify-content: center; gap: 20px; padding: 20px; background: #181a20; position: fixed; bottom: 0; width: 100%; }
-        .input-group { display: flex; flex-direction: column; gap: 5px; }
-        input { background: #2b2f36; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; width: 80px; }
-        .btn { padding: 15px 40px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
-        .btn-up { background: var(--up); color: #000; }
-        .btn-down { background: var(--down); color: #fff; }
-        .btn:active { transform: scale(0.9); }
+        /* কন্ট্রোল প্যানেল (Quotex Style) */
+        .control-panel { height: 35vh; background: var(--q-panel); padding: 15px; display: flex; flex-direction: column; gap: 12px; border-radius: 20px 20px 0 0; }
+        .row { display: flex; gap: 10px; }
+        .input-box { flex: 1; background: #263246; border: 1px solid #36465d; padding: 10px; border-radius: 8px; text-align: center; }
+        .label { font-size: 11px; color: #7a8ba3; margin-bottom: 4px; display: block; }
+        
+        .trade-btn { flex: 1; padding: 18px; border: none; border-radius: 12px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .up { background: var(--up); color: #fff; }
+        .down { background: var(--down); color: #fff; }
+        .trade-btn:active { opacity: 0.7; transform: scale(0.95); }
 
-        /* রেজাল্ট পপআপ */
-        #notification { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); padding: 20px 40px; border-radius: 10px; font-weight: bold; display: none; z-index: 100; font-family: 'Orbitron'; }
+        /* পপআপ নোটিফিকেশন */
+        #result { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); padding: 15px 30px; border-radius: 10px; font-weight: bold; display: none; z-index: 100; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center; width: 80%; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div style="font-family: 'Orbitron'; color: #d4af37;">ID LAGBO TRADER</div>
-    <div class="balance-box">Wallet: $<span id="balance">100.00</span></div>
+<div class="top-bar">
+    <div><span style="color:var(--gold); font-weight:900;">Q</span> Quotex</div>
+    <div style="display:flex; align-items:center;">
+        <div class="balance">$<span id="bal">100.00</span></div>
+        <span class="demo-tag">DEMO</span>
+    </div>
 </div>
 
-<div class="chart-container" id="chart">
+<div class="chart-area" id="chart">
     </div>
 
-<div id="notification"></div>
+<div id="result"></div>
 
-<div class="controls">
-    <div class="input-group">
-        <label style="font-size: 10px; color: #888;">AMOUNT</label>
-        <input type="number" id="betAmount" value="10">
+<div class="control-panel">
+    <div class="row">
+        <div class="input-box">
+            <span class="label">TIME</span>
+            <strong>01:00</strong>
+        </div>
+        <div class="input-box">
+            <span class="label">INVESTMENT</span>
+            <input type="number" id="amt" value="10" style="background:transparent; border:none; color:#fff; width:100%; text-align:center; font-weight:bold; font-size:1.1rem; outline:none;">
+        </div>
     </div>
-    <button class="btn btn-up" onclick="placeTrade('up')">HIGHER (Buy)</button>
-    <button class="btn btn-down" onclick="placeTrade('down')">LOWER (Sell)</button>
+    
+    <div class="row" style="flex: 1;">
+        <button class="trade-btn up" onclick="trade('up')">UP</button>
+    </div>
+    <div class="row" style="flex: 1;">
+        <button class="trade-btn down" onclick="trade('down')">DOWN</button>
+    </div>
 </div>
 
 <script>
-    let balance = 100.00;
-    let winCount = 0;
+    let wallet = 100.00;
+    let counter = 0;
     const chart = document.getElementById('chart');
 
-    // কাল্পনিক ক্যান্ডেল তৈরি করা
-    function generateCandle(type, height) {
-        const candle = document.createElement('div');
-        candle.className = 'candle';
-        candle.style.height = height + 'px';
-        candle.style.backgroundColor = type === 'up' ? 'var(--up)' : 'var(--down)';
-        candle.innerHTML = '<div class="wick"></div>';
-        
-        if (chart.children.length > 15) chart.removeChild(chart.firstChild);
-        chart.appendChild(candle);
+    function makeCandle(isUp, h) {
+        const c = document.createElement('div');
+        c.className = 'candle';
+        c.style.height = h + 'px';
+        c.style.backgroundColor = isUp ? 'var(--up)' : 'var(--down)';
+        c.innerHTML = '<div class="wick"></div>';
+        if(chart.children.length > 25) chart.removeChild(chart.firstChild);
+        chart.appendChild(c);
     }
 
-    // শুরুতে কিছু ক্যান্ডেল দিয়ে চার্ট সাজানো
-    for(let i=0; i<12; i++) {
-        generateCandle(Math.random() > 0.5 ? 'up' : 'down', Math.random() * 150 + 50);
-    }
+    // প্রাথমিক ক্যান্ডেলস
+    for(let i=0; i<20; i++) makeCandle(Math.random() > 0.5, Math.random() * 100 + 40);
 
-    function placeTrade(direction) {
-        const amount = parseFloat(document.getElementById('betAmount').value);
-        if (amount > balance) return alert("ব্যালেন্স নেই!");
+    function trade(dir) {
+        const bet = parseFloat(document.getElementById('amt').value);
+        if(bet > wallet) return alert("Insufficient Balance!");
 
-        const notify = document.getElementById('notification');
-        notify.style.display = 'block';
-        notify.style.background = '#333';
-        notify.innerText = "Trade Active: 5s remaining...";
+        const res = document.getElementById('result');
+        res.style.display = 'block';
+        res.style.background = '#263246';
+        res.style.color = '#fff';
+        res.innerText = "Processing Trade... 00:05";
 
-        // সাইকোলজিক্যাল গেম লজিক
-        setTimeout(() => {
-            let isWin;
-            winCount++;
-
-            // সিক্রেট লজিক: শুরুতে ৩বার জিতবে, তারপর হারবে, শেষে গিয়ে লাভ দেখাবে
-            if (winCount <= 3) isWin = true; 
-            else if (winCount % 3 === 0) isWin = false; // প্রতি ৩ বারে একবার লস
-            else isWin = Math.random() > 0.4; // ৬০% উইন রেট (যাতে সে নেশায় পড়ে যায়)
-
-            if (isWin) {
-                const profit = amount * 0.85;
-                balance += profit;
-                notify.style.background = 'var(--up)';
-                notify.style.color = '#000';
-                notify.innerText = `YOU WIN! +$${profit.toFixed(2)}`;
-                generateCandle('up', 180);
-            } else {
-                balance -= amount;
-                notify.style.background = 'var(--down)';
-                notify.style.color = '#fff';
-                notify.innerText = `LOSS! -$${amount.toFixed(2)}`;
-                generateCandle('down', 180);
+        let time = 5;
+        const timer = setInterval(() => {
+            time--;
+            res.innerText = `Processing Trade... 00:0${time}`;
+            if(time <= 0) {
+                clearInterval(timer);
+                resolveTrade(dir, bet);
             }
-
-            document.getElementById('balance').innerText = balance.toFixed(2);
-            setTimeout(() => notify.style.display = 'none', 2000);
-        }, 3000); // ৩ সেকেন্ডের ফাস্ট ট্রেড
+        }, 1000);
     }
+
+    function resolveTrade(dir, bet) {
+        counter++;
+        let win;
+        
+        // --- সিক্রেট লজিক (রাকিবের কন্ট্রোল) ---
+        if(counter <= 3) win = true; // শুরুতে ৩ বার জিতবে
+        else if(bet >= wallet * 0.5) win = false; // বড় বাজি ধরলে হারবে (মানিপুলেশন)
+        else win = Math.random() > 0.45; // বাকি সময় ৫৫% উইন রেট
+
+        const res = document.getElementById('result');
+        if(win) {
+            const p = bet * 0.82;
+            wallet += p;
+            res.style.background = 'rgba(0, 201, 167, 0.9)';
+            res.innerText = `SUCCESS!\n+$${p.toFixed(2)}`;
+            makeCandle(true, 150);
+        } else {
+            wallet -= bet;
+            res.style.background = 'rgba(255, 74, 90, 0.9)';
+            res.innerText = `CLOSED!\n-$${bet.toFixed(2)}`;
+            makeCandle(false, 150);
+        }
+
+        document.getElementById('bal').innerText = wallet.toFixed(2);
+        setTimeout(() => res.style.display = 'none', 2500);
+    }
+
+    // রিয়েল টাইম ক্যান্ডেল মুভমেন্ট সিমুলেশন
+    setInterval(() => {
+        makeCandle(Math.random() > 0.5, Math.random() * 80 + 30);
+    }, 4000);
 </script>
 
 </body>
-</html>
+    </html>
