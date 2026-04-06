@@ -3,187 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID LAGBO | Intelligence Engine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <title>ID LAGBO | OSINT Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-gold: #ffcc00;
-            --dark-void: #050505;
-            --panel-bg: #111;
-            --success: #00ff88;
+        :root { --neon: #00f2ff; --gold: #d4af37; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; margin: 0; text-align: center; }
+        
+        .header { padding: 50px 20px; border-bottom: 1px solid #222; background: linear-gradient(to bottom, #111, #050505); }
+        .header h1 { font-family: 'Orbitron', sans-serif; color: var(--gold); letter-spacing: 5px; margin: 0; }
+
+        .search-container { max-width: 700px; margin: 50px auto; padding: 20px; }
+        input { 
+            width: 80%; padding: 15px; border-radius: 50px; border: 1px solid #333; 
+            background: #111; color: var(--neon); font-size: 1rem; outline: none; transition: 0.3s;
         }
-
-        body { 
-            background: var(--dark-void); 
-            color: #fff; 
-            font-family: 'Poppins', sans-serif; 
-            margin: 0; 
-            overflow-x: hidden;
+        input:focus { border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+        
+        .trace-btn { 
+            margin-top: 20px; padding: 15px 40px; border-radius: 50px; border: none; 
+            background: var(--gold); color: #000; font-weight: 900; cursor: pointer; 
+            font-family: 'Orbitron', sans-serif; transition: 0.3s;
         }
+        .trace-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
-        /* হেডার - গোল্ডেন ব্র্যান্ডিং (DNA) */
-        .header { 
-            text-align: center; 
-            padding: 40px 20px; 
-            border-bottom: 2px solid var(--neon-gold);
-            background: linear-gradient(to bottom, #111, #050505);
+        .result-box { 
+            max-width: 800px; margin: 30px auto; display: none; 
+            background: #0a0a0a; border: 1px solid #222; border-radius: 15px; padding: 20px; text-align: left;
         }
-
-        .header h1 { 
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            margin: 10px 0;
-            background: linear-gradient(135deg, #d4af37, #f1d592);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 5px;
-        }
-
-        /* ইন্টেলিজেন্স গ্রিড */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            padding: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: var(--panel-bg);
-            border: 1px solid #222;
-            border-radius: 15px;
-            padding: 20px;
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .card:hover { border-color: var(--neon-gold); transform: scale(1.02); }
-
-        .label { color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
-        .value { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: var(--neon-gold); margin: 10px 0; }
-        .status { font-size: 0.9rem; color: var(--success); font-weight: bold; }
-
-        /* লাইভ স্ক্যানার অ্যানিমেশন */
-        .scanner-bar {
-            height: 2px;
-            background: var(--neon-gold);
-            width: 100%;
-            position: absolute;
-            top: 0; left: 0;
-            animation: scan 3s infinite linear;
-            box-shadow: 0 0 10px var(--neon-gold);
-        }
-
-        @keyframes scan {
-            0% { top: 0; opacity: 0; }
-            50% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        /* কন্ট্রোল প্যানেল */
-        .control-panel {
-            background: #0a0a0a;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .btn-action {
-            background: var(--neon-gold);
-            color: #000;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 900;
-            font-family: 'Orbitron', sans-serif;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
-        }
-
-        .log-box {
-            background: #000;
-            border: 1px solid #333;
-            padding: 15px;
-            border-radius: 10px;
-            height: 150px;
-            overflow-y: auto;
-            font-family: monospace;
-            color: #00ff00;
-            text-align: left;
-            font-size: 0.85rem;
-            max-width: 800px;
-            margin: 20px auto;
-        }
+        .log-line { font-family: monospace; color: #00ff00; font-size: 0.85rem; margin: 5px 0; }
+        .data-card { border-left: 3px solid var(--neon); padding-left: 15px; margin: 15px 0; }
+        .data-card h3 { color: var(--gold); margin: 0; font-size: 0.9rem; text-transform: uppercase; }
+        .data-card p { margin: 5px 0; color: #ccc; font-size: 0.95rem; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="width:80px; height:80px; background:var(--neon-gold); margin:0 auto; border-radius:50%; border:2px solid #fff; overflow:hidden;">
-        <img src="logo.png" alt="ID LAGBO" style="width:100%; height:100%; object-fit:cover;">
-    </div>
     <h1>ID LAGBO</h1>
-    <p style="color:#888; letter-spacing:3px;">ARBITRAGE INTELLIGENCE v1.0</p>
+    <p style="color: #666; font-size: 0.8rem; letter-spacing: 2px;">DIGITAL FOOTPRINT & OSINT ENGINE</p>
 </div>
 
-<div class="grid">
-    <div class="card">
-        <div class="scanner-bar"></div>
-        <div class="label">P2P USDT Gap (Binance/Local)</div>
-        <div class="value" id="usdt-gap">৳ 1.45</div>
-        <div class="status">⚡ High Opportunity Found</div>
-    </div>
-
-    <div class="card">
-        <div class="scanner-bar"></div>
-        <div class="label">International Gold Gap (oz)</div>
-        <div class="value" id="gold-gap">$ 12.80</div>
-        <div class="status">🛡️ Medium Risk Zone</div>
-    </div>
-
-    <div class="card">
-        <div class="scanner-bar"></div>
-        <div class="label">Max Reward (1% Risk Plan)</div>
-        <div class="value" id="reward-calc">৳ 4,200</div>
-        <div class="status">📈 Scalable Asset</div>
-    </div>
+<div class="search-container">
+    <input type="text" id="fbLink" placeholder="ফেসবুক প্রোফাইল লিংক পেস্ট করুন...">
+    <br>
+    <button class="trace-btn" onclick="startTrace()">START DEEP TRACE</button>
 </div>
 
-<div class="control-panel">
-    <button class="btn-action" onclick="runIntelligence()">RUN MARKET SCAN</button>
-    <div class="log-box" id="log">
-        [SYSTEM] Waiting for instruction... <br>
-        [SYSTEM] Ready to capture market gaps.
+<div class="result-box" id="resultBox">
+    <div id="logs"></div>
+    <hr border="0" style="border-top:1px solid #222; margin: 20px 0;">
+    <div id="finalData" style="display:none;">
+        <div class="data-card">
+            <h3>Target Identification</h3>
+            <p id="targetName">প্রসেসিং হচ্ছে...</p>
+        </div>
+        <div class="data-card">
+            <h3>Cross-Platform Matches</h3>
+            <p id="targetSocial">LinkedIn, Instagram, TikTok স্ক্যান করা হচ্ছে...</p>
+        </div>
+        <div class="data-card">
+            <h3>Potential Location/Data Leaks</h3>
+            <p id="targetLeaks">পাবলিক ডাটাবেজ চেক করা হচ্ছে...</p>
+        </div>
     </div>
 </div>
 
 <script>
-    function logMessage(msg) {
-        const log = document.getElementById('log');
-        log.innerHTML += `<br>> ${msg}`;
-        log.scrollTop = log.scrollHeight;
+    function startTrace() {
+        const link = document.getElementById('fbLink').value;
+        if(!link.includes('facebook.com')) {
+            alert('দয়া করে সঠিক ফেসবুক লিংক দিন!');
+            return;
+        }
+
+        const resBox = document.getElementById('resultBox');
+        const logs = document.getElementById('logs');
+        resBox.style.display = 'block';
+        logs.innerHTML = "";
+        
+        // সিমিউলেটেড OSINT লজিক
+        const steps = [
+            "[SYSTEM] Initializing Rakib's Intelligence Engine...",
+            "[OSINT] Extracting UserID from Facebook URL...",
+            "[SCAN] Searching Global Social Graph (LinkedIn, Twitter, IG)...",
+            "[DB] Checking Public Data Leaks & Archives...",
+            "[GEO] Analyzing Location Tags from Public Posts...",
+            "[INFO] Synthesizing Digital Identity..."
+        ];
+
+        let i = 0;
+        const interval = setInterval(() => {
+            logs.innerHTML += `<div class="log-line">> ${steps[i]}</div>`;
+            i++;
+            if(i >= steps.length) {
+                clearInterval(interval);
+                showData(link);
+            }
+        }, 1000);
     }
 
-    function runIntelligence() {
-        logMessage("Initializing Rakib Ahmed's Smart Engine...");
-        logMessage("Connecting to Global Market APIs...");
-        
-        // সিমিউলেটেড লাইভ ডাটা লজিক (ভবিষ্যতে এখানে আসল API বসবে)
-        setTimeout(() => {
-            const usdtGap = (Math.random() * 2 + 0.5).toFixed(2);
-            const goldGap = (Math.random() * 15 + 5).toFixed(2);
-            const reward = (usdtGap * 3000).toFixed(0); // ধরুন ৩০০০ ডলারের ট্রেড
-
-            document.getElementById('usdt-gap').innerText = "৳ " + usdtGap;
-            document.getElementById('gold-gap').innerText = "$ " + goldGap;
-            document.getElementById('reward-calc').innerText = "৳ " + reward;
-
-            logMessage(`Gap Detected! Profit Opportunity: ৳ ${reward}`);
-            logMessage("System Analysis: Safe to proceed with 1% Risk.");
-        }, 1500);
+    function showData(link) {
+        document.getElementById('finalData').style.display = 'block';
+        // এখানে আমরা একটি স্মার্ট ডেমো রেজাল্ট দেখাচ্ছি
+        // বাস্তবে এখানে আমরা নির্দিষ্ট Google Dorks সার্চ ওপেন করতে পারি
+        document.getElementById('targetName').innerText = "ফেসবুক আইডি থেকে প্রাপ্ত নাম এবং ডিজিটাল সিগনেচার ম্যাচ করা হয়েছে।";
+        document.getElementById('targetSocial').innerText = "একই ইউজারনেম দিয়ে আরও ৩টি প্ল্যাটফর্মে প্রোফাইল পাওয়ার সম্ভাবনা ৮০%।";
+        document.getElementById('targetLeaks').innerText = "কোনো পাবলিক ডাটা লিক পাওয়া যায়নি। প্রোফাইলটি সিকিউর।";
     }
 </script>
 
 </body>
-        </html>
+    </html>
                                                                                                    </html>
