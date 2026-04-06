@@ -2,60 +2,76 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>ID LAGBO | OSINT Intelligence Tool</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins&display=swap" rel="stylesheet">
+    <title>ID LAGBO | AI Vision & Voice</title>
     <style>
-        body { background: #050505; color: #fff; font-family: 'Poppins', sans-serif; text-align: center; }
-        .box { max-width: 600px; margin: 50px auto; padding: 30px; background: #111; border: 2px solid #d4af37; border-radius: 15px; }
-        input { width: 90%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #333; color: #00f2ff; border-radius: 10px; }
-        .btn { background: #d4af37; color: #000; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
-        .result-item { text-align: left; background: #0a0a0a; padding: 15px; margin-top: 10px; border-left: 4px solid #d4af37; cursor: pointer; }
-        .result-item:hover { background: #222; }
-        h2 { font-family: 'Orbitron'; color: #d4af37; }
+        body { background: #000; color: #fff; font-family: 'Poppins', sans-serif; margin: 0; overflow: hidden; text-align: center; }
+        #camera-view { width: 100vw; height: 100vh; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0.6; }
+        .ui-layer { position: relative; z-index: 10; padding-top: 50px; }
+        .ai-status { font-size: 1.2rem; color: #00f2ff; text-shadow: 0 0 10px #00f2ff; margin-bottom: 20px; }
+        .mic-btn { width: 80px; height: 80px; border-radius: 50%; background: #d4af37; border: none; cursor: pointer; box-shadow: 0 0 20px #d4af37; }
+        .mic-btn:active { transform: scale(0.9); }
+        .visualizer { display: flex; justify-content: center; gap: 5px; margin-top: 30px; height: 40px; }
+        .bar { width: 5px; height: 10px; background: #00f2ff; animation: pulse 0.5s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { height: 10px; } 50% { height: 40px; } }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>OSINT TRACER</h2>
-    <p style="color: #888; font-size: 0.8rem;">ব্যক্তির ডিজিটাল ফুটপ্রিন্ট খুঁজে বের করুন</p>
-    
-    <input type="text" id="targetInput" placeholder="ইউজারনেম বা ফেসবুক আইডি দিন (উদা: rakib.official)">
-    <br>
-    <button class="btn" onclick="deepSearch()">DEEP SEARCH START</button>
+<video id="camera-view" autoplay playsinline></video>
 
-    <div id="results" style="margin-top: 30px; display: none;">
-        <p style="color: #00ff88;">[Analysis Complete] নিচের সোর্সগুলো চেক করুন:</p>
-        <div id="linksContainer"></div>
+<div class="ui-layer">
+    <h1 style="font-family: 'Orbitron'; color: #d4af37; letter-spacing: 5px;">ID LAGBO AI</h1>
+    <div class="ai-status" id="status">সিস্টেম অনলাইন | আপনার ক্যামেরা দেখছে...</div>
+
+    <div class="visualizer" id="visualizer" style="display: none;">
+        <div class="bar"></div><div class="bar" style="animation-delay: 0.1s"></div>
+        <div class="bar" style="animation-delay: 0.2s"></div><div class="bar" style="animation-delay: 0.3s"></div>
+    </div>
+
+    <div style="margin-top: 100px;">
+        <button class="mic-btn" onclick="startVoice()">🎙️</button>
+        <p style="color: #888; margin-top: 15px;">কথা বলতে বাটনে চাপ দিন</p>
     </div>
 </div>
 
 <script>
-    function deepSearch() {
-        const input = document.getElementById('targetInput').value;
-        if(!input) return alert("দয়া করে নাম বা আইডি দিন!");
-
-        const container = document.getElementById('linksContainer');
-        container.innerHTML = "";
-        document.getElementById('results').style.display = "block";
-
-        // OSINT লজিক: এই লিঙ্কগুলো গুগলের ফিল্টার ব্যবহার করে ওই ব্যক্তির ডাটা খুঁজে বের করবে
-        const searchQueries = [
-            { name: "Google Footprint (প্রোফাইল ও ছবি)", url: `https://www.google.com/search?q=site:facebook.com+"${input}"` },
-            { name: "Global Social Match (অন্যান্য সোশ্যাল মিডিয়া)", url: `https://www.google.com/search?q="${input}"+-site:facebook.com` },
-            { name: "LinkedIn Professional Profile", url: `https://www.google.com/search?q=site:linkedin.com/in/"${input}"` },
-            { name: "Public Documents & Files", url: `https://www.google.com/search?q="${input}"+filetype:pdf+OR+filetype:doc` },
-            { name: "Instagram Identity Check", url: `https://www.instagram.com/${input.replace(/\s+/g, '')}` }
-        ];
-
-        searchQueries.forEach(query => {
-            const div = document.createElement('div');
-            div.className = "result-item";
-            div.innerHTML = `<b>> ${query.name}</b><br><small style="color:#666">ক্লিক করে ডাটা দেখুন</small>`;
-            div.onclick = () => window.open(query.url, '_blank');
-            container.appendChild(div);
-        });
+    // ক্যামেরা চালু করার লজিক
+    async function initCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: true });
+            document.getElementById('camera-view').srcObject = stream;
+        } catch (err) {
+            alert("ক্যামেরা এক্সেস করা যায়নি!");
+        }
     }
+
+    // ভয়েস এবং এআই লজিক (সিমুলেশন)
+    function startVoice() {
+        const status = document.getElementById('status');
+        const visualizer = document.getElementById('visualizer');
+        
+        status.innerText = "রাকিব, আমি শুনছি...";
+        visualizer.style.display = "flex";
+
+        // এখানে এআই মডেল আপনার কথার উত্তর দেবে
+        setTimeout(() => {
+            speak("হ্যালো রাকিব, আমি আপনার ক্যামেরা দিয়ে সবকিছু দেখতে পাচ্ছি। আপনার আজকের ট্রেডিং গোল কী?");
+            status.innerText = "এআই কথা বলছে...";
+        }, 2000);
+    }
+
+    function speak(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'bn-BD';
+        window.speechSynthesis.speak(utterance);
+        
+        utterance.onend = () => {
+            document.getElementById('status').innerText = "সিস্টেম অনলাইন | আপনার ক্যামেরা দেখছে...";
+            document.getElementById('visualizer').style.display = "none";
+        };
+    }
+
+    initCamera();
 </script>
 
 </body>
