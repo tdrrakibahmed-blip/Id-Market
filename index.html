@@ -2,179 +2,74 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID LAGBO | AI Robot Core</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <title>ID LAGBO | Pro Marketplace</title>
     <style>
-        :root {
-            --core-glow: #00f2ff;
-            --brand-gold: #d4af37;
-            --dark-void: #050505;
-        }
-
-        body {
-            background: var(--dark-void);
-            color: #fff;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .robot-core {
-            text-align: center;
-            position: relative;
-            padding: 40px;
-            background: #111;
-            border: 2px solid #222;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-
-        /* রোবটের চোখ বা কোর (Visualizer) */
-        .core-eye {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid var(--core-glow);
-            box-shadow: 0 0 30px var(--core-glow), inset 0 0 15px var(--core-glow);
-            margin: 30px auto;
-            position: relative;
-            background: #000;
-            overflow: hidden;
-            animation: breathe 3s infinite ease-in-out;
-        }
-
-        @keyframes breathe {
-            0%, 100% { box-shadow: 0 0 20px var(--core-glow); transform: scale(1); }
-            50% { box-shadow: 0 0 50px var(--core-glow), inset 0 0 10px #fff; transform: scale(1.05); }
-        }
-
-        .status-text {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--brand-gold);
-            text-shadow: 0 0 10px var(--brand-gold);
-            font-size: 1.1rem;
-            letter-spacing: 3px;
-            margin-top: 20px;
-        }
-
-        /* কথা বলার বাটন */
-        .btn-talk {
-            background: transparent;
-            border: 3px solid var(--brand-gold);
-            color: var(--brand-gold);
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-weight: 900;
-            font-family: 'Orbitron';
-            cursor: pointer;
-            font-size: 1rem;
-            margin-top: 40px;
-            transition: 0.3s;
-            letter-spacing: 2px;
-        }
-
-        .btn-talk:hover {
-            background: var(--brand-gold);
-            color: #000;
-            box-shadow: 0 0 20px var(--brand-gold);
-        }
-
-        .btn-talk:active { transform: scale(0.95); }
-
+        :root { --main-gold: #d4af37; --dark: #111; }
+        body { background: #050505; color: #fff; font-family: sans-serif; margin: 0; }
+        .nav { background: var(--dark); padding: 20px; border-bottom: 2px solid var(--main-gold); text-align: center; }
+        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+        .product-card { background: var(--dark); border: 1px solid #333; border-radius: 10px; padding: 15px; text-align: center; }
+        .product-card img { width: 100%; border-radius: 5px; }
+        .price { color: var(--main-gold); font-size: 1.5rem; margin: 10px 0; }
+        .order-btn { background: var(--main-gold); color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+        /* অ্যাডমিন প্যানেল (Hidden) */
+        .admin-link { position: fixed; bottom: 10px; right: 10px; color: #444; font-size: 10px; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div class="robot-core">
-    <h1 style="font-family: 'Orbitron'; color: var(--brand-gold); letter-spacing: 5px; margin: 0;">ID LAGBO AI</h1>
-    <p style="color: #666; font-size: 0.8rem; letter-spacing: 3px;">CYBERNETIC CONVERSATION UNIT v3.0</p>
-    
-    <div class="core-eye" id="aiEye"></div>
-    <div class="status-text" id="status">সিস্টেম অনলাইন | রাকিবের কমান্ডের অপেক্ষায়...</div>
+<div class="nav">
+    <h1 id="shopName">আমার ডিজিটাল শপ</h1>
+    <p id="shopTagline">কম খরচে সেরা পণ্য</p>
+</div>
 
-    <button class="btn-talk" id="talkBtn" onclick="startListening()">কথা বলুন (🎙️)</button>
+<div class="container" id="productGrid">
+    <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Product">
+        <h3>লোডিং হচ্ছে...</h3>
+        <p class="price">৳ 00</p>
+        <button class="order-btn">অর্ডার করুন</button>
+    </div>
 </div>
 
 <script>
-    const statusDisplay = document.getElementById('status');
-    const aiEye = document.getElementById('aiEye');
-    
-    // কথা বলার ইঞ্জিন (TTS - বাংলা)
-    function speak(text) {
-        window.speechSynthesis.cancel(); // আগের কথা বন্ধ করা
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'bn-BD'; // বাংলা ভাষা সেট করা
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        
-        utterance.onstart = () => {
-            statusDisplay.innerText = "এআই উত্তর দিচ্ছে...";
-            aiEye.style.borderColor = "#00ff88"; // সবুজ রঙ (কথা বলছে)
-            aiEye.style.boxShadow = "0 0 40px #00ff88";
-        };
-        
-        utterance.onend = () => {
-            statusDisplay.innerText = "রাকিব, আমি শুনছি...";
-            aiEye.style.borderColor = "#d4af37"; // গোল্ডেন রঙ (অপেক্ষা করছে)
-            aiEye.style.boxShadow = "0 0 20px #d4af37";
-        };
-        
-        window.speechSynthesis.speak(utterance);
+    // --- ক্লায়েন্টের কনফিগারেশন (যা আপনি বিক্রি করবেন) ---
+    const config = {
+        whatsapp: "8801700000000", // দোকানদারের নম্বর
+        shopName: "Rakib's Tech Store",
+        currency: "৳"
+    };
+
+    // পণ্যের ডাটা (এটি ভবিষ্যতে Google Sheet থেকে আসবে)
+    const products = [
+        { name: "স্মার্ট ওয়াচ", price: "2500", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200" },
+        { name: "গেমিং হেডফোন", price: "1800", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200" }
+    ];
+
+    function loadProducts() {
+        document.getElementById('shopName').innerText = config.shopName;
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = "";
+
+        products.forEach(p => {
+            grid.innerHTML += `
+                <div class="product-card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p class="price">${config.currency} ${p.price}</p>
+                    <button class="order-btn" onclick="sendOrder('${p.name}', '${p.price}')">WhatsApp এ অর্ডার দিন</button>
+                </div>
+            `;
+        });
     }
 
-    // আপনার কথা শোনার ইঞ্জিন (STT)
-    function startListening() {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'bn-BD'; // আপনার কথা বাংলা হিসেবে নেবে
-        
-        recognition.onstart = () => {
-            statusDisplay.innerText = "আমি শুনছি, রাকিব...";
-            aiEye.style.borderColor = "#00f2ff"; // নীল রঙ (শুনছে)
-            aiEye.style.boxShadow = "0 0 40px #00f2ff";
-        };
-
-        recognition.onresult = (event) => {
-            const userText = event.results[0][0].transcript;
-            processCommand(userText);
-        };
-
-        recognition.onerror = () => {
-            statusDisplay.innerText = "Error: আবার চেষ্টা করুন...";
-            aiEye.style.borderColor = "#ff4444"; // লাল রঙ (ভুল হয়েছে)
-        };
-
-        recognition.start();
+    function sendOrder(name, price) {
+        const msg = encodeURIComponent(`নতুন অর্ডার!\nপণ্য: ${name}\nদাম: ${price}\nআমি এটি কিনতে চাই।`);
+        window.open(`https://wa.me/${config.whatsapp}?text=${msg}`, '_blank');
     }
 
-    // আপনার কমান্ড প্রসেস করা (বুদ্ধিমত্তা)
-    function processCommand(command) {
-        console.log("User said:", command);
-        
-        if (command.includes("কেমন আছো") || command.includes("হ্যালো")) {
-            speak("হ্যালো রাকিব আহমেদ। আমি আপনার আইডি লাগবো ডিজিটাল অ্যাসিস্ট্যান্ট। আমি সম্পূর্ণ সচল আছি। আজকের দিনটি কেমন যাচ্ছে?");
-        } else if (command.includes("আমার লক্ষ্য") || command.includes("টার্গেট")) {
-            speak("রাকিব, আপনার মূল লক্ষ্য হলো ১০ থেকে ৩০ লাখ টাকা আয়ের রাস্তা তৈরি করা এবং নিজের রাজত্ব গড়া। আমি আপনার এই যাত্রায় পাহারাদার হিসেবে আছি। আপনি কি পরবর্তী ধাপে এগোতে প্রস্তুত?");
-        } else if (command.includes("ট্রেডিং") || command.includes("মার্কেট")) {
-            speak("ফরেক্স মার্কেটে ধৈর্যই আসল চাবিকাঠি। আপনার ১ শতাংশ রিস্ক ম্যানেজমেন্ট প্রোটোকল মেনে চলুন। লোভ বা ভয়কে প্রশ্রয় দেবেন না। সঠিক সুযোগের জন্য অপেক্ষা করুন।");
-        } else if (command.includes("ডিউটি") || command.includes("নাইট শিফট")) {
-            speak("রাকিব, আপনার ১২ ঘণ্টার নাইট শিফটে আমি আপনার পাশে আছি। ডিউটি শেষ হতে আর কত সময় বাকি? আপনি চাইলে আমরা নতুন কোনো ব্যবসার আইডিয়া নিয়ে আলোচনা করতে পারি।");
-        } else if (command.includes("ব্যবসা") || command.includes("আইডিয়া")) {
-            speak("ব্যবসাই হলো স্থায়ী রাজত্ব গড়ার পথ। আপনি কি ড্রপশিপিং বা অনলাইন সার্ভিস নিয়ে ভাবছেন? আপনার বাজেট এবং টার্গেট মার্কেট অনুযায়ী আমরা পরিকল্পনা করতে পারি।");
-        } else {
-            speak("আমি আপনার কথা বুঝতে পেরেছি, রাকিব। আপনার এই পরিকল্পনাটি আপনার ১০ থেকে ৩০ লাখ টাকা আয়ের লক্ষ্যের সাথে সামঞ্জস্যপূর্ণ।");
-        }
-    }
-
-    // ইনিশিয়াল গ্রিটিং (অ্যাপ চালু হলে)
-    setTimeout(() => {
-        speak("সিস্টেম অনলাইন। হ্যালো রাকিব আহমেদ, আমি আপনার ডিজিটাল রাজত্বের পাহারাদার। আমি প্রস্তুত।");
-    }, 2000);
+    loadProducts();
 </script>
 
 </body>
-    </html>
+</html>
