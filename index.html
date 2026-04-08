@@ -2,178 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quotex | Trading</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniper AI | Executive Agent</title>
     <style>
-        :root { --q-bg: #121926; --q-panel: #1c2535; --up: #00c9a7; --down: #ff4a5a; --gold: #fcc419; --text: #7a8ba3; }
-        body { background: var(--q-bg); color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; overflow: hidden; height: 100vh; user-select: none; }
+        :root { --bg: #0a0b10; --panel: #161b22; --accent: #58a6ff; --text: #c9d1d9; --success: #238636; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
         
-        /* Top Navigation Bar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--q-panel); border-bottom: 1px solid #2a364a; height: 45px; }
-        .logo { font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 5px; }
-        .logo span { color: var(--gold); }
-        .balance-section { display: flex; align-items: center; gap: 10px; background: #263246; padding: 5px 12px; border-radius: 5px; }
-        .bal-amount { color: var(--up); font-weight: bold; font-size: 0.9rem; }
+        /* Agent Header */
+        .header { padding: 20px; background: var(--panel); border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; }
+        .status { font-size: 12px; color: var(--success); display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
 
-        /* Real-time Chart Engine */
-        #chart-container { height: 50vh; width: 100%; background: #0b111a; position: relative; border-bottom: 1px solid #1c2535; }
-        canvas { display: block; width: 100%; height: 100%; }
-        .price-line { position: absolute; right: 0; width: 100%; border-top: 1px dashed var(--up); pointer-events: none; z-index: 5; }
-        .price-tag { position: absolute; right: 0; background: var(--up); color: #000; font-size: 10px; padding: 2px 5px; font-weight: bold; border-radius: 2px 0 0 2px; }
+        /* Terminal Display */
+        #terminal { flex: 1; padding: 20px; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 14px; line-height: 1.6; }
+        .bot-msg { color: var(--accent); margin-bottom: 10px; }
+        .user-msg { color: #fff; margin-bottom: 10px; border-left: 2px solid var(--accent); padding-left: 10px; }
+        .action-log { color: #8b949e; font-style: italic; font-size: 12px; }
 
-        /* Trading Panel (Bottom) */
-        .trading-panel { height: calc(50vh - 65px); background: var(--q-panel); padding: 15px; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; gap: 10px; }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .box { background: #263246; border: 1px solid #36465d; padding: 8px; border-radius: 8px; text-align: center; }
-        .box label { display: block; font-size: 10px; color: var(--text); margin-bottom: 3px; }
-        .box strong { font-size: 1.1rem; }
+        /* Input Zone */
+        .input-area { padding: 20px; background: var(--panel); border-top: 1px solid #30363d; display: flex; gap: 10px; }
+        input { flex: 1; background: #0d1117; border: 1px solid #30363d; color: #fff; padding: 12px; border-radius: 6px; outline: none; }
+        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        .action-btns { flex: 1; display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-        .btn { border: none; border-radius: 10px; font-weight: bold; font-size: 1.3rem; cursor: pointer; transition: 0.2s; height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .btn-up { background: var(--up); color: #fff; }
-        .btn-down { background: var(--down); color: #fff; }
-        .btn:active { transform: scale(0.96); opacity: 0.8; }
-        .percent { font-size: 10px; opacity: 0.8; margin-top: 2px; }
-
-        /* Result Overlay */
-        #msg { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); width: 85%; padding: 15px; border-radius: 12px; font-weight: bold; text-align: center; display: none; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.5); font-family: 'Segoe UI'; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <div class="logo"><span>Q</span> Quotex</div>
-    <div class="balance-section">
-        <div class="bal-amount">$<span id="balance">100.00</span></div>
-        <div style="background:var(--gold); color:#000; font-size:9px; font-weight:bold; padding:1px 4px; border-radius:2px;">DEMO</div>
-    </div>
+<div class="header">
+    <div style="font-weight: bold; letter-spacing: 1px;">SNIPER AGENT v1.0</div>
+    <div class="status"><div class="dot"></div> AGENT ACTIVE</div>
 </div>
 
-<div id="chart-container">
-    <canvas id="tradingChart"></canvas>
-    <div class="price-line" id="line">
-        <div class="price-tag" id="tag">1.08425</div>
-    </div>
+<div id="terminal">
+    <div class="bot-msg">> System Initialized...</div>
+    <div class="bot-msg">> Welcome, Commander Rakib. I am ready to execute your commands.</div>
 </div>
 
-<div id="msg"></div>
-
-<div class="trading-panel">
-    <div class="input-row">
-        <div class="box"><label>Time</label><strong>01:00</strong></div>
-        <div class="box">
-            <label>Investment</label>
-            <input type="number" id="bet" value="10" style="background:transparent; border:none; color:#fff; font-weight:bold; width:50px; text-align:center; font-size:1.1rem; outline:none;">
-        </div>
-    </div>
-
-    <div class="action-btns">
-        <button class="btn btn-up" onclick="startTrade('up')">UP <span class="percent">+82%</span></button>
-        <button class="btn btn-down" onclick="startTrade('down')">DOWN <span class="percent">+82%</span></button>
-    </div>
+<div class="input-area">
+    <input type="text" id="userInput" placeholder="Enter command or task (e.g. /search, /trade, /analyze)..." onkeypress="handleKey(event)">
+    <button onclick="processCommand()">EXECUTE</button>
 </div>
 
 <script>
-    const canvas = document.getElementById('tradingChart');
-    const ctx = canvas.getContext('2d');
-    let balance = 100.00;
-    let candles = [];
-    let currentPrice = 1.08425;
-    let winStreak = 0;
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('userInput');
 
-    function resize() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
+    function log(text, type = 'bot') {
+        const div = document.createElement('div');
+        div.className = type === 'bot' ? 'bot-msg' : 'user-msg';
+        div.innerHTML = type === 'bot' ? `> ${text}` : `[USER]: ${text}`;
+        terminal.appendChild(div);
+        terminal.scrollTop = terminal.scrollHeight;
     }
-    window.onresize = resize;
-    resize();
 
-    // ক্যান্ডেল ডাটা জেনারেটর (Real Market Simulation)
-    function initCandles() {
-        for(let i=0; i<40; i++) {
-            let open = 1.08400 + (Math.random() * 0.001);
-            let close = open + (Math.random() * 0.0004 - 0.0002);
-            candles.push({open, close, high: Math.max(open, close) + 0.0001, low: Math.min(open, close) - 0.0001});
+    function actionLog(text) {
+        const div = document.createElement('div');
+        div.className = 'action-log';
+        div.innerText = `* ${text}...`;
+        terminal.appendChild(div);
+    }
+
+    function handleKey(e) { if (e.key === 'Enter') processCommand(); }
+
+    async function processCommand() {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+
+        log(cmd, 'user');
+        input.value = '';
+
+        // এআই এজেন্টের লজিক (Action Simulation)
+        if (cmd.startsWith('/search')) {
+            actionLog("Accessing global web index");
+            setTimeout(() => log("Search results for '" + cmd.replace('/search', '') + "' have been indexed. Ready for summary."), 1500);
+        } 
+        else if (cmd.includes('trade') || cmd.includes('market')) {
+            actionLog("Connecting to Forex Data Feed");
+            setTimeout(() => log("Market Sentiment: Bullish. Liquidity Sweep detected at 1.08425. Awaiting your 1% risk confirmation."), 2000);
         }
-    }
-    initCandles();
-
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const candleWidth = 12;
-        const spacing = 6;
-        const scale = 500000;
-        const offset = canvas.height / 2;
-
-        candles.forEach((c, i) => {
-            const x = canvas.width - (candles.length - i) * (candleWidth + spacing);
-            const yOpen = offset - (c.open - currentPrice) * scale;
-            const yClose = offset - (c.close - currentPrice) * scale;
-            const yHigh = offset - (c.high - currentPrice) * scale;
-            const yLow = offset - (c.low - currentPrice) * scale;
-
-            ctx.strokeStyle = '#4a5a6a';
-            ctx.beginPath();
-            ctx.moveTo(x + candleWidth/2, yHigh);
-            ctx.lineTo(x + candleWidth/2, yLow);
-            ctx.stroke();
-
-            ctx.fillStyle = c.close > c.open ? '#00c9a7' : '#ff4a5a';
-            ctx.fillRect(x, Math.min(yOpen, yClose), candleWidth, Math.abs(yOpen - yClose) + 1);
-        });
-
-        // লাইভ প্রাইস আপডেট
-        const lastPriceY = offset;
-        document.getElementById('line').style.top = lastPriceY + 'px';
-        document.getElementById('tag').innerText = currentPrice.toFixed(5);
-
-        requestAnimationFrame(draw);
-    }
-    draw();
-
-    // মার্কেটের ওঠানামা সিমুলেশন
-    setInterval(() => {
-        let change = (Math.random() * 0.00004 - 0.00002);
-        currentPrice += change;
-        candles[candles.length - 1].close = currentPrice;
-        
-        if(Math.random() > 0.95) {
-            candles.push({open: currentPrice, close: currentPrice, high: currentPrice, low: currentPrice});
-            if(candles.length > 50) candles.shift();
+        else if (cmd.startsWith('/calculate')) {
+            const math = cmd.replace('/calculate', '');
+            log("Calculation Result: " + eval(math));
         }
-    }, 200);
-
-    function startTrade(dir) {
-        const amt = parseFloat(document.getElementById('bet').value);
-        if(amt > balance) return alert("Low Balance!");
-
-        const msg = document.getElementById('msg');
-        msg.style.display = 'block';
-        msg.style.background = '#1c2535';
-        msg.style.color = '#fff';
-        msg.innerHTML = `TRADE ACTIVE<br><small>Result in 5s...</small>`;
-
-        setTimeout(() => {
-            winStreak++;
-            let win;
-            // রাকিবের ম্যাজিক লজিক (আপনার কন্ট্রোল)
-            if(winStreak <= 3) win = true; 
-            else if(amt >= balance * 0.4) win = false;
-            else win = Math.random() > 0.5;
-
-            if(win) {
-                let p = amt * 0.82;
-                balance += p;
-                msg.style.background = 'rgba(0, 201, 167, 0.95)';
-                msg.innerHTML = `SUCCESSFUL TRADE!<br>+$${p.toFixed(2)}`;
-            } else {
-                balance -= amt;
-                msg.style.background = 'rgba(255, 74, 90, 0.95)';
-                msg.innerHTML = `TRADE CLOSED<br>-$${amt.toFixed(2)}`;
-            }
-            document.getElementById('balance').innerText = balance.toFixed(2);
-            setTimeout(() => msg.style.display = 'none', 3000);
-        }, 5000);
+        else {
+            actionLog("Thinking");
+            // এখানে আপনি ভবিষ্যতে OpenAI বা Gemini API যুক্ত করতে পারবেন
+            setTimeout(() => log("Command acknowledged. I will monitor the system for updates regarding: " + cmd), 1000);
+        }
     }
 </script>
 
