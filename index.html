@@ -3,95 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sniper AI | Executive Agent</title>
+    <title>Rakib Ahmed | The 5-Second Sniper | Professional Trader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #0a0b10; --panel: #161b22; --accent: #58a6ff; --text: #c9d1d9; --success: #238636; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Agent Header */
-        .header { padding: 20px; background: var(--panel); border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; }
-        .status { font-size: 12px; color: var(--success); display: flex; align-items: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
+        :root {
+            --primary: #00e676; /* Sniper Green */
+            --bg: #050509;
+            --panel: #0d1117;
+            --text-main: #e2e8f0;
+            --text-dim: #8899ac;
+        }
 
-        /* Terminal Display */
-        #terminal { flex: 1; padding: 20px; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 14px; line-height: 1.6; }
-        .bot-msg { color: var(--accent); margin-bottom: 10px; }
-        .user-msg { color: #fff; margin-bottom: 10px; border-left: 2px solid var(--accent); padding-left: 10px; }
-        .action-log { color: #8b949e; font-style: italic; font-size: 12px; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
 
-        /* Input Zone */
-        .input-area { padding: 20px; background: var(--panel); border-top: 1px solid #30363d; display: flex; gap: 10px; }
-        input { flex: 1; background: #0d1117; border: 1px solid #30363d; color: #fff; padding: 12px; border-radius: 6px; outline: none; }
-        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        /* ------------------ Loading Screen ------------------ */
+        #loader {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s;
+        }
 
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        .loader-content {
+            text-align: center;
+            font-family: monospace;
+            color: var(--primary);
+        }
+
+        /* ------------------ Hero Section (3D Effect) ------------------ */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(circle at center, #111 0%, #050509 100%);
+            perspective: 1000px; /* 3D Perspective */
+        }
+
+        .hero-content {
+            z-index: 10;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .profile-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #111;
+            box-shadow: 0 0 30px rgba(0, 230, 118, 0.2);
+        }
+
+        .sniper-scope {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 240px;
+            height: 240px;
+            background: url('https://i.imgur.com/8Qj8nK6.png') no-repeat center/contain; /* Scope Overlay */
+            opacity: 0.7;
+            animation: scopeRotate 20s linear infinite;
+        }
+
+        h1 { font-size: 3.5rem; margin: 10px 0; letter-spacing: -2px; text-shadow: 0 0 10px rgba(0,230,118,0.5); }
+        .tagline { color: var(--primary); font-family: monospace; font-size: 1.2rem; margin-bottom: 40px; }
+
+        /* ------------------ Features Section (Hover Effects) ------------------ */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            padding: 80px 20px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--panel);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #1a1a1a;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, rgba(0,0,0,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-card i { color: var(--primary); font-size: 2rem; margin-bottom: 20px; }
+        .feature-card h3 { margin: 10px 0; font-size: 1.5rem; }
+        .feature-card p { color: var(--text-dim); margin: 0; font-size: 0.95rem; }
+
+        /* ------------------ About Section (SMC Thame) ------------------ */
+        .about {
+            max-width: 900px;
+            margin: 100px auto;
+            padding: 60px 20px;
+            background: var(--panel);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .about p { font-size: 1.1rem; line-height: 1.8; color: var(--text-dim); }
+        .highlight { color: #fff; font-weight: 600; }
+
+        /* ------------------ Animations ------------------ */
+        @keyframes scopeRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ------------------ Footer ------------------ */
+        footer { text-align: center; padding: 50px; color: var(--text-dim); border-top: 1px solid #1a1a1a; }
+
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div style="font-weight: bold; letter-spacing: 1px;">SNIPER AGENT v1.0</div>
-    <div class="status"><div class="dot"></div> AGENT ACTIVE</div>
-</div>
+    <div id="loader">
+        <div class="loader-content">
+            <div>INITIALIZING SNIPER PROTOCOL</div>
+            <div style="font-size: 1.2rem; margin-top: 10px;">[##########] 100%</div>
+        </div>
+    </div>
 
-<div id="terminal">
-    <div class="bot-msg">> System Initialized...</div>
-    <div class="bot-msg">> Welcome, Commander Rakib. I am ready to execute your commands.</div>
-</div>
+    <section class="hero" id="hero">
+        <div class="hero-content" id="heroContent">
+            <div class="profile-container">
+                <img src="your-photo.jpg" alt="Rakib Ahmed" class="profile-img">
+                <div class="sniper-scope"></div>
+            </div>
+            <h1>RAKIB AHMED</h1>
+            <p class="tagline">> Professional Trader | Liquidity Hunter <span style="animation: blink 1s infinite;">|</span></p>
+        </div>
+    </section>
 
-<div class="input-area">
-    <input type="text" id="userInput" placeholder="Enter command or task (e.g. /search, /trade, /analyze)..." onkeypress="handleKey(event)">
-    <button onclick="processCommand()">EXECUTE</button>
-</div>
+    <section class="features">
+        <div class="feature-card">
+            <i class="fas fa-crosshairs"></i>
+            <h3>The 5-Second Sniper</h3>
+            <p>SMC-ভিত্তিক লিকুইডিটি সুইপ এন্ট্রি। আমার ট্রেডিং সিস্টেম মূলত বড় প্রতিষ্ঠানের পায়ের ছাপ অনুসরণ করে।</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Risk Master</h3>
+            <p>আমি প্রতি ট্রেডে কঠোরভাবে ১% রিস্ক মেইনটেইন করি। প্রফিট আমার লক্ষ্য, কিন্তু ক্যাপিটাল সুরক্ষা আমার ধর্ম।</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>High RR</h3>
+            <p>ছোট স্টপ লস এবং বড় প্রফিট লক্ষ্য (১:৮+)। আমি শুধু সেই সেটআপগুলোতেই এন্ট্রি নেই যার উইন রেট এবং রিওয়ার্ড হাই।</p>
+        </div>
+    </section>
 
-<script>
-    const terminal = document.getElementById('terminal');
-    const input = document.getElementById('userInput');
+    <section class="about">
+        <div class="section-header">
+            <i class="fas fa-brain"></i>
+            <h2>আমার ট্রেডিং দর্শন</h2>
+        </div>
+        <p>
+            আমি রাকিব আহমেদ, একজন <span class="highlight">শৃঙ্খলিত এবং লজিক্যাল ট্রেডার</span>। আমি বিশ্বাস করি ট্রেডিং হলো প্রোবাবিলিটি বা সম্ভাবনার খেলা, যেখানে আবেগ বা ভাগ্যের কোনো স্থান নেই।
+        </p>
+        <p>
+            আমি <span class="highlight">Smart Money Concepts (SMC)</span> এবং আন্তর্জাতিক সেশন টাইমিং নিয়ে কাজ করি। আমি চার্টের শুধু প্রাইস অ্যাকশন দেখি না, আমি বুঝি কেন প্রাইস একটি নির্দিষ্ট জোনে যাবে এবং সেখানে গিয়ে কী রিঅ্যাকশন দেবে। আমার কাছে ট্রেডিং মানে হলো <span class="highlight">ধৈর্য এবং সঠিক সময়ের অপেক্ষা</span>।
+        </p>
+    </section>
 
-    function log(text, type = 'bot') {
-        const div = document.createElement('div');
-        div.className = type === 'bot' ? 'bot-msg' : 'user-msg';
-        div.innerHTML = type === 'bot' ? `> ${text}` : `[USER]: ${text}`;
-        terminal.appendChild(div);
-        terminal.scrollTop = terminal.scrollHeight;
-    }
+    <footer>
+        &copy; 2026 Rakib Ahmed. All rights reserved. <br>
+        Powered by The 5-Second Sniper.
+    </footer>
 
-    function actionLog(text) {
-        const div = document.createElement('div');
-        div.className = 'action-log';
-        div.innerText = `* ${text}...`;
-        terminal.appendChild(div);
-    }
+    <script>
+        // 1. Loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 1000); // 1-second delay for effect
+        });
 
-    function handleKey(e) { if (e.key === 'Enter') processCommand(); }
+        // 2. Hero Mouse Tracking (3D Tilt Effect)
+        const hero = document.getElementById('hero');
+        const heroContent = document.getElementById('heroContent');
 
-    async function processCommand() {
-        const cmd = input.value.trim();
-        if (!cmd) return;
+        hero.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25; // Tilt intensity
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            heroContent.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
 
-        log(cmd, 'user');
-        input.value = '';
-
-        // এআই এজেন্টের লজিক (Action Simulation)
-        if (cmd.startsWith('/search')) {
-            actionLog("Accessing global web index");
-            setTimeout(() => log("Search results for '" + cmd.replace('/search', '') + "' have been indexed. Ready for summary."), 1500);
-        } 
-        else if (cmd.includes('trade') || cmd.includes('market')) {
-            actionLog("Connecting to Forex Data Feed");
-            setTimeout(() => log("Market Sentiment: Bullish. Liquidity Sweep detected at 1.08425. Awaiting your 1% risk confirmation."), 2000);
-        }
-        else if (cmd.startsWith('/calculate')) {
-            const math = cmd.replace('/calculate', '');
-            log("Calculation Result: " + eval(math));
-        }
-        else {
-            actionLog("Thinking");
-            // এখানে আপনি ভবিষ্যতে OpenAI বা Gemini API যুক্ত করতে পারবেন
-            setTimeout(() => log("Command acknowledged. I will monitor the system for updates regarding: " + cmd), 1000);
-        }
-    }
-</script>
-
+        // Reset position on mouse leave
+        hero.addEventListener('mouseleave', () => {
+            heroContent.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+    </script>
 </body>
-</html>
+            </html>
